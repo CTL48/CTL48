@@ -1005,66 +1005,126 @@
         }
 
         function renderMembers(list) {
-            const container = document.getElementById('members-container');
-            const buttons = document.getElementById('scroll-buttons');
-            container.innerHTML = '';
-            buttons.innerHTML = '';
+  const container = document.getElementById('members-container');
+  const buttons = document.getElementById('scroll-buttons');
+  container.innerHTML = '';
+  buttons.innerHTML = '';
 
-            if (!list || list.length === 0) {
-                container.innerHTML = '<p style="text-align:center;color:#999">Nenhum membro cadastrado.</p>';
-                return;
-            }
+  if (!list || list.length === 0) {
+    container.innerHTML = '<p style="text-align:center;color:#999">Nenhum membro cadastrado.</p>';
+    return;
+  }
 
-            const gens = {};
-            list.forEach(r => {
-                const f = r.fields || {};
-                if (f.Status !== 'Graduada' && f.Status !== 'Demitida') {
-                    const g = f.Geracao || 'Outros';
-                    if (!gens[g]) gens[g] = [];
-                    gens[g].push(f);
-                }
-            });
+  const EX_STATUSES = new Set(['Graduada', 'Demitida', 'Expulsa']);
 
-            Object.keys(gens).sort().forEach((gen, idx) => {
-                const btnId = `gen-${String(gen).replace(/\s+/g, '')}-${idx}`;
+  const gens = {};       // ativos por geração
+  const exMembers = [];  // ex-membros (todos juntos)
 
-                buttons.innerHTML += `
-        <button class="button-gen"
-          onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">
-          ${gen}
-        </button>`;
+  list.forEach(r => {
+    const f = r.fields || {};
+    const status = (f.Status || '').trim();
 
-                let membersHtml = '';
-                gens[gen].forEach(m => {
-                    const payload = encodeURIComponent(JSON.stringify({
-                        name: m.Nome || '',
-                        team: m.Time || '',
-                        gen: m.Geracao || '',
-                        photo: (m.Foto && m.Foto[0] && m.Foto[0].url) ? m.Foto[0].url : '',
-                        bio: m.Perfil || 'Sem biografia.',
-                        gallery: m.Galeria ? m.Galeria.map(g => g.url) : [],
-                        part: m.Participacoes || ''
-                    }));
+    // monta objeto do membro (para reusar nas duas listas)
+    const memberObj = {
+      Nome: f.Nome || '',
+      Time: f.Time || '',
+      Geracao: f.Geracao || 'Outros',
+      Status: status,
+      Foto: f.Foto || null,
+      Perfil: f.Perfil || 'Sem biografia.',
+      Galeria: f.Galeria || [],
+      Participacoes: f.Participacoes || ''
+    };
 
-                    membersHtml += `
-          <div class="member-card" onclick="openMember('${payload}')">
-            <div class="member-photo-container">
-              <img src="${(m.Foto && m.Foto[0] && m.Foto[0].url) ? m.Foto[0].url : 'https://placehold.co/300'}" loading="lazy">
-            </div>
-            <div class="member-info-box">
-              <div class="member-name-text">${m.Nome || ''}</div>
-              <div class="member-team-text">${m.Time || ''}</div>
-            </div>
-          </div>`;
-                });
+    // separa ex-membros
+    if (EX_STATUSES.has(status)) {
+      exMembers.push(memberObj);
+      return;
+    }
 
-                container.innerHTML += `
-        <div id="${btnId}" class="generation-group">
-          <h3 class="generation-title">${gen}</h3>
-          <div class="member-grid-layout">${membersHtml}</div>
-        </div>`;
-            });
-        }
+    // ativos por geração
+    const g = memberObj.Geracao || 'Outros';
+    if (!gens[g]) gens[g] = [];
+    gens[g].push(memberObj);
+  });
+
+  // helper para criar card
+  function memberCardHTML(m) {
+    const photoUrl = (m.Foto && m.Foto[0] && m.Foto[0].url) ? m.Foto[0].url : 'https://placehold.co/300';
+    const payload = encodeURIComponent(JSON.stringify({
+      name: m.Nome || '',
+      team: m.Time || '',
+      gen: m.Geracao || '',
+      photo: photoUrl,
+      bio: m.Perfil || 'Sem biografia.',
+      gallery: m.Galeria ? m.Galeria.map(g => g.url) : [],
+      part: m.Participacoes || '',
+      status: m.Status || ''
+    }));
+
+    return `
+      <div class="member-card" onclick="openMember('${payload}')">
+        <div class="member-photo-container">
+          <img src="${photoUrl}" loading="lazy">
+        </div>
+        <div class="member-info-box">
+          <div class="member-name-text">${m.Nome || ''}</div>
+          <div class="member-team-text">${m.Time || ''}</div>
+        </div>
+      </div>`;
+  }
+
+  // 1) render gerações (ativos)
+  const sortedGens = Object.keys(gens).sort();
+
+  sortedGens.forEach((gen, idx) => {
+    const btnId = `gen-${String(gen).replace(/\s+/g, '')}-${idx}`;
+
+    buttons.innerHTML += `
+      <button class="button-gen"
+        onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">
+        ${gen}
+      </button>`;
+
+    let membersHtml = '';
+    gens[gen].forEach(m => { membersHtml += memberCardHTML(m); });
+
+    container.innerHTML += `
+      <div id="${btnId}" class="generation-group">
+        <h3 class="generation-title">${gen}</h3>
+        <div class="member-grid-layout">${membersHtml}</div>
+      </div>`;
+  });
+
+  // 2) render Ex-membros no final (se existir)
+  if (exMembers.length) {
+    // ordena ex-membros: primeiro por status (os 3 juntos), depois por nome
+    const statusOrder = { 'Graduada': 1, 'Demitida': 2, 'Expulsa': 3 };
+    exMembers.sort((a, b) => {
+      const sa = statusOrder[a.Status] || 99;
+      const sb = statusOrder[b.Status] || 99;
+      if (sa !== sb) return sa - sb;
+      return (a.Nome || '').localeCompare(b.Nome || '', 'pt-BR', { sensitivity: 'base' });
+    });
+
+    // botão "Ex-membros"
+    const exId = 'gen-ex-members';
+    buttons.innerHTML += `
+      <button class="button-gen"
+        onclick="document.getElementById('${exId}').scrollIntoView({behavior:'smooth', block:'start'})">
+        Ex-membros
+      </button>`;
+
+    let exHtml = '';
+    exMembers.forEach(m => { exHtml += memberCardHTML(m); });
+
+    container.innerHTML += `
+      <div id="${exId}" class="generation-group">
+        <h3 class="generation-title">Ex-membros</h3>
+        <div class="member-grid-layout">${exHtml}</div>
+      </div>`;
+  }
+}
 
         function openMember(json) {
             const data = JSON.parse(decodeURIComponent(json));
