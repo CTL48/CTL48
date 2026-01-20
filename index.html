@@ -1131,7 +1131,14 @@
 
             document.getElementById('m-cover').src = data.photo || 'https://placehold.co/300';
             document.getElementById('m-name').innerText = data.name || '';
-            document.getElementById('m-team').innerText = `${data.team || ''}${data.gen ? ` • ${data.gen}` : ''}`;
+           const status = (data.status || "").trim();
+
+let extra = "";
+if (status === "Graduada") extra = " • Graduada";
+
+document.getElementById('m-team').innerText =
+  `${data.team || ''}${data.gen ? ` • ${data.gen}` : ''}${extra}`;
+
             document.getElementById('m-bio').innerText = data.bio || 'Sem biografia.';
 
             const gal = document.getElementById('m-gallery');
