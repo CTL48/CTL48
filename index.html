@@ -5,796 +5,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CTL48 Official App</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
             --primary: #e91e63;
-            --dark: #212121;
+            --primary-soft: #fce4ec;
+            --dark: #333333;
+            --text-gray: #666666;
             --bg: #fafafa;
-            --gray: #f5f5f5;
+            --white: #ffffff;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--dark);
-            font-family: 'Roboto', sans-serif;
-            padding-bottom: 85px;
-            overflow-x: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--dark); font-family: 'Roboto', sans-serif; padding-bottom: 90px; overflow-x: hidden; }
 
         /* HEADER */
-        .header {
-            background: linear-gradient(135deg, var(--primary), #ff4081);
-            padding: 20px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 90;
-            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
-            text-align: center;
-        }
+        .header { background: rgba(255, 255, 255, 0.95); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1); text-align: center; backdrop-filter: blur(10px); }
+        .logo { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--primary); letter-spacing: 2px; }
 
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 1.8rem;
-            color: white;
-            letter-spacing: 3px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
+        /* HERO */
+        .hero { position: relative; height: 340px; color: white; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; overflow: hidden; margin-bottom: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2); }
+        .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: brightness(0.6); }
+        .hero-tag { background: var(--primary); width: fit-content; padding: 6px 14px; font-size: 0.7rem; font-weight: 900; border-radius: 50px; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+        .hero-title { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1.1; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .hero-sub { font-size: 0.9rem; opacity: 0.9; font-weight: 500; }
+
+        .container { padding: 10px 20px; }
+        .section-title { font-family: 'Montserrat'; font-weight: 900; font-size: 1.3rem; margin: 20px 0; color: var(--dark); display: flex; align-items: center; }
+        .section-title::before { content: ''; display: block; width: 6px; height: 24px; background: var(--primary); margin-right: 10px; border-radius: 10px; }
 
         /* VIEW CONTAINER */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-            min-height: calc(100vh - 165px);
-        }
+        .view-section { display: none; animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1); min-height: calc(100vh - 165px); }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* HERO & HOME */
-        .hero {
-            position: relative;
-            height: 320px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 24px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            filter: brightness(0.5);
-        }
-
-        .hero-tag {
-            background: var(--primary);
-            width: fit-content;
-            padding: 8px 14px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
-
-        .hero-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 900;
-            line-height: 1.1;
-            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
-            margin-bottom: 8px;
-        }
-
-        .hero-sub {
-            font-size: 0.95rem;
-            opacity: 0.95;
-        }
-
-        .container {
-            padding: 20px 16px;
-        }
-
-        .section-title {
-            font-family: 'Montserrat';
-            font-weight: 900;
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-            padding-left: 12px;
-            border-left: 5px solid var(--primary);
-        }
-
-        /* NEWS LIST */
-        .news-item {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-            background: white;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .news-date {
-            font-weight: bold;
-            color: #bbb;
-            font-size: 0.75rem;
-            min-width: 60px;
-            text-align: center;
-            line-height: 1.2;
-        }
-
-        .news-date span {
-            display: block;
-            font-size: 1.8rem;
-            color: var(--primary);
-            font-weight: 900;
-        }
-
-        .news-content h4 {
-            font-size: 1.05rem;
-            margin-bottom: 8px;
-            line-height: 1.4;
-            font-weight: 700;
-        }
-
-        .news-tag {
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: var(--primary);
-            background: rgba(233, 30, 99, 0.1);
-            padding: 4px 10px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-bottom: 6px;
-        }
-
-        .news-text {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 6px;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        /* NEWS */
+        .news-item { display: flex; gap: 15px; margin-bottom: 15px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); }
+        .news-date { font-weight: 700; color: #ccc; font-size: 0.7rem; min-width: 50px; text-align: center; line-height: 1.1; display: flex; flex-direction: column; justify-content: center; }
+        .news-date span { display: block; font-size: 1.6rem; color: var(--primary); font-weight: 900; }
+        .news-content h4 { font-size: 1rem; margin-bottom: 5px; line-height: 1.3; font-weight: 800; color: var(--dark); }
+        .news-tag { font-size: 0.65rem; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; }
+        .news-text { font-size: 0.85rem; color: var(--text-gray); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
         /* DISCOGRAFIA */
-        .discography-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 16px;
-        }
-
-        .single-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .single-card {
-            position: relative;
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-
-        .single-card:active {
-            transform: scale(0.97);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-        }
-
-        .single-cover img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            display: block;
-        }
-
-        .single-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 16px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-        }
-
-        .single-info span {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 400;
-            opacity: 0.9;
-            margin-top: 4px;
-        }
-
-        .single-details-panel {
-            display: none;
-            grid-column: 1 / -1;
-            background: white;
-            margin-top: 0;
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .single-details-panel.is-visible {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* MEMBERS GRID */
-        #scroll-buttons {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 12px;
-            margin-bottom: 24px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        #scroll-buttons::-webkit-scrollbar {
-            display: none;
-        }
-
-        .button-gen {
-            white-space: nowrap;
-            padding: 12px 20px;
-            border-radius: 24px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            color: #666;
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .button-gen:active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: scale(0.95);
-        }
-
-        .generation-title {
-            font-size: 1.2rem;
-            color: var(--primary);
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 12px;
-            margin: 32px 0 20px 0;
-            font-weight: 900;
-        }
-
-        .member-grid-layout {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-        }
-
-        .member-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .member-card:active {
-            transform: scale(0.95);
-        }
-
-        .member-photo-container img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-        }
-
-        .member-info-box {
-            padding: 12px 8px;
-            text-align: center;
-        }
-
-        .member-name-text {
-            font-weight: 800;
-            font-size: 0.85rem;
-            color: #333;
-            margin-bottom: 4px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .member-team-text {
-            font-size: 0.7rem;
-            color: #999;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: flex-end;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            animation: fadeUp 0.3s forwards;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .modal-content {
-            background: white;
-            width: 100%;
-            height: 92vh;
-            border-radius: 24px 24px 0 0;
-            overflow-y: auto;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: rgba(0, 0, 0, 0.4);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            font-size: 1.3rem;
-            cursor: pointer;
-            z-index: 20;
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-header-bg {
-            height: 140px;
-            background: linear-gradient(135deg, var(--primary), #ff80ab);
-            width: 100%;
-            flex-shrink: 0;
-        }
-
-        .modal-profile-img {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 6px solid white;
-            object-fit: cover;
-            object-position: top center;
-            margin-top: -70px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            background: #fff;
-            align-self: center;
-        }
-
-        .modal-body {
-            padding: 12px 20px 100px 20px;
-            text-align: center;
-        }
-
-        .modal-title {
-            font-family: 'Montserrat';
-            font-weight: 900;
-            font-size: 1.8rem;
-            margin-top: 12px;
-            margin-bottom: 6px;
-            color: var(--dark);
-        }
-
-        .modal-sub {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 28px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #f0f0f0;
-            margin-bottom: 24px;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 14px 12px;
-            background: none;
-            border: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #bbb;
-            border-bottom: 3px solid transparent;
-            transition: .3s;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-            text-align: left;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .gallery-grid img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .label {
-            font-size: 0.65em;
-            padding: 3px 8px;
-            border-radius: 12px;
-            color: white;
-            margin-left: 6px;
-            vertical-align: middle;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .label.a-side {
-            background-color: #4a90e2;
-        }
-
-        .label.b-side {
-            background-color: #b86e23;
-        }
-
-        .label.center,
-        .label.w-center {
-            background-color: #d0021b;
-        }
-
-        .label.unit {
-            background-color: #7e57c2;
-        }
-
-        .label.undergirls {
-            background-color: #2e7d32;
-        }
-
-        /* verde */
-        .label.solo {
-            background-color: #f06292;
-        }
-
-        /* rosa claro */
-
-        .singles-title {
-            color: var(--primary);
-            font-weight: 700;
-            margin-top: 18px;
-            margin-bottom: 8px;
-            font-size: 1.05rem;
-        }
-
-        .participation-list {
-            padding-left: 20px;
-            line-height: 1.9;
-            color: #444;
-            font-size: 0.95rem;
-        }
-
-        .participation-list li {
-            margin-bottom: 8px;
-        }
-
-        .modal-nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 24px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 12px;
-        }
-
-        .modal-nav-btn {
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            padding: 8px 4px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #777;
-            cursor: pointer;
-        }
-
-        .modal-nav-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .modal-section {
-            display: none;
-        }
-
-        .modal-section.active {
-            display: block;
-        }
-
-        .tracklist {
-            margin-left: 20px;
-            line-height: 1.8;
-            font-size: 0.95rem;
-        }
-
-        .tracklist li {
-            margin-bottom: 10px;
-        }
-
-        .single-details-panel .member-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 16px;
-            justify-content: center;
-        }
-
-        .member-card-static {
-            text-align: center;
-        }
-
-        .member-photo {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin: 0 auto;
-            border: 3px solid #f0f0f0;
-        }
-
-        .member-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-        }
-
-        .member-card-static.is-center .member-photo {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.25);
-            transform: scale(1.1);
-        }
-
-        .member-info h3 {
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin: 8px 0 2px;
-        }
-
-        .member-info p {
-            font-size: 0.7rem;
-            color: #777;
-            margin: 0;
-        }
+        .discography-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .single-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .single-card { position: relative; background: #fff; border-radius: 18px; overflow: hidden; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); transition: transform .2s ease; }
+        .single-card:active { transform: scale(0.96); }
+        .single-cover img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+        .single-info { padding: 12px; background: white; text-align: center; }
+        .single-title-text { font-weight: 800; font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .single-type-text { font-size: 0.7rem; color: var(--primary); font-weight: 600; text-transform: uppercase; }
+
+        /* FILTROS MEMBROS */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .filter-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #eee; background: #fff; font-weight: 700; color: #777; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3); }
+
+        /* MEMBERS LIST */
+        #scroll-buttons { display: flex; gap: 8px; overflow-x: auto; padding: 5px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        #scroll-buttons::-webkit-scrollbar { display: none; }
+        .button-gen { white-space: nowrap; padding: 10px 20px; border-radius: 50px; border: 1px solid #eee; background: white; color: #777; font-size: 0.85rem; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: all 0.2s; }
+        .button-gen.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3); }
+        .generation-title { font-size: 1.1rem; color: var(--primary); margin: 30px 0 15px 0; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding-left: 15px; border-left: 4px solid var(--primary); }
+        .member-grid-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .member-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04); }
+        .member-photo-container img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .member-info-box { padding: 10px 5px; text-align: center; }
+        .member-name-text { font-weight: 800; font-size: 0.8rem; color: var(--dark); margin-bottom: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .member-team-text { font-size: 0.65rem; color: #aaa; font-weight: 700; text-transform: uppercase; }
+
+        /* === MODALS (Pop-ups) === */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s forwards; }
+        .modal-content { background: white; width: 100%; height: 90vh; border-radius: 25px 25px 0 0; overflow-y: auto; position: relative; display: flex; flex-direction: column; animation: slideUp 0.3s ease; box-shadow: 0 -5px 40px rgba(0,0,0,0.2); }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .modal-close-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.8); color: #333; width: 35px; height: 35px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; z-index: 20; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+
+        /* MODAL PERFIL HEADER */
+        .modal-header-bg { height: 150px; background: linear-gradient(45deg, #ff80ab, #e91e63); width: 100%; flex-shrink: 0; }
+        .modal-profile-img { width: 130px; height: 130px; border-radius: 50%; border: 5px solid white; object-fit: cover; margin-top: -65px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); background: #fff; align-self: center; }
+        .modal-body { padding: 10px 25px 100px 25px; text-align: center; }
+        .modal-title { font-family: 'Montserrat'; font-weight: 900; font-size: 1.6rem; margin-top: 15px; margin-bottom: 5px; color: var(--dark); }
+        .modal-sub { color: #888; font-size: 0.9rem; margin-bottom: 25px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* MODAL DISCOGRAFIA HEADER */
+        .disco-header-info { padding: 30px 25px 10px 25px; text-align: center; }
+        .disco-cover-large { width: 140px; height: 140px; border-radius: 12px; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-bottom: 15px; }
+        .disco-title-large { font-family: 'Montserrat'; font-weight: 900; font-size: 1.4rem; color: var(--dark); margin-bottom: 5px; }
+        .disco-sub-large { color: var(--primary); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; }
+
+        /* TABS GERAIS */
+        .tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 25px; justify-content: center; gap: 15px; margin-top: 15px; }
+        .tab-btn { background: none; border: none; font-weight: 700; font-size: 0.9rem; color: #ccc; padding: 10px 5px; border-bottom: 3px solid transparent; transition: 0.3s; cursor: pointer; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { display: none; text-align: left; width: 100%; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        /* Conteúdo vindo do ADMIN (Tracklist e Formação) */
+        .modal-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .modal-nav-btn { background: #f5f5f5; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; color: #777; font-size: 0.85rem; transition:0.2s; }
+        .modal-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3); }
+        
+        .modal-section { display: none; animation: fadeIn 0.3s; }
+        .modal-section.active { display: block; }
+
+        .tracklist { list-style: none; }
+        .tracklist li { padding: 12px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; color: #555; display: flex; justify-content: space-between; align-items: center; }
+        
+        .formation-group { margin-bottom: 30px; }
+        .formation-title { text-align: center; font-weight: 800; font-size: 0.95rem; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; justify-content: center; }
+        
+        .member-card-static { background: #fff; border-radius: 12px; padding: 10px 5px; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,0.04); border: 1px solid #f9f9f9; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; }
+        .member-photo { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; margin-bottom: 8px; border: 3px solid #f0f0f0; }
+        .member-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .member-card-static.is-center .member-photo { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.2); }
+        .member-info h3 { font-size: 0.75rem; font-weight: 800; color: var(--dark); margin: 0; }
+        .member-info p { font-size: 0.65rem; color: #999; margin-top: 2px; font-weight: 500; }
+        .formation-separator { border: 0; height: 1px; background: var(--primary-soft); margin: 20px auto; width: 80%; }
+
+        /* Labels */
+        .label { font-size: 0.6em; padding: 2px 8px; border-radius: 8px; color: white; margin-left: 5px; vertical-align: middle; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .label.a-side { background-color: #4a90e2; }
+        .label.b-side { background-color: #ff9800; }
+        .label.center { background-color: #e91e63; }
+        .label.unit { background-color: #9c27b0; }
+        .label.solo { background-color: #ff4081; }
 
         /* NAV BOTTOM */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 85px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            display: flex;
-            border-top: 1px solid #f0f0f0;
-            z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); display: flex; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.03); }
+        .nav-item { flex: 1; border: none; background: none; color: #ccc; font-size: 0.65rem; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 1.5rem; margin-bottom: 4px; transition:0.2s; }
+        .nav-item.active i { transform: translateY(-3px); }
 
-        .nav-item {
-            flex: 1;
-            border: none;
-            background: none;
-            color: #bbb;
-            font-size: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        /* PARTICIPAÇÕES CARDS (PERFIL) */
+        #m-part { display: flex; flex-direction: column; gap: 15px; }
+        .part-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #fafafa; overflow: hidden; }
+        .part-header { background: var(--primary-soft); padding: 12px 15px; color: var(--primary); font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .part-list { list-style: none; padding: 0; margin: 0; }
+        .part-list li { padding: 12px 15px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--dark); }
+        .part-list li:last-child { border-bottom: none; }
+        .song-name { font-weight: 600; font-size: 0.85rem; }
+        .song-badges { display: flex; gap: 4px; }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .gallery-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
 
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-item i {
-            font-size: 1.6rem;
-            margin-bottom: 6px;
-            transition: 0.2s;
-        }
-
-        .nav-item.active i {
-            transform: translateY(-3px) scale(1.1);
-        }
-
-        /* TABLET E DESKTOP */
-        @media (min-width: 768px) {
-            .single-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
-            }
-
-            .member-grid-layout {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 20px;
-            }
-
-            .hero {
-                height: 400px;
-            }
-
-            .container,
-            .discography-container {
-                padding: 30px 24px;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .single-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .modal-content {
-                max-width: 600px;
-                margin: 0 auto;
-                height: 95vh;
-                border-radius: 24px;
-            }
-        }
-
-        /* ===== Ajustes de espaçamento / centralização da Formação ===== */
-
-        /* Título "Formação" bem centralizado e com mais respiro */
-        .formation-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            width: 100%;
-
-            margin-top: 26px;
-            /* mais longe do conteúdo acima */
-            margin-bottom: 18px;
-            /* mais longe dos member-photo */
-            padding: 0 10px;
-        }
-
-        /* Se tiver ícone dentro do título */
-        .formation-title i {
-            margin-right: 6px;
-        }
-
-        /* Grid de membros da formação: dá respiro antes do HR */
-        .single-details-panel .member-grid {
-            margin-bottom: 22px;
-            /* afasta os member-photo do HR */
-        }
-
-        /* Linha separadora mais distante dos member-photo e do que vem depois */
-        .formation-separator {
-            width: 70%;
-            margin: 28px auto 30px;
-            /* top = longe dos photos | bottom = longe dos nomes/textos abaixo */
-        }
-
-        /* Opcional: se o nome do membro (h3) estiver colado no topo */
-        .single-details-panel .member-info h3 {
-            margin-top: 10px;
-            /* dá espaço entre foto e nome */
-        }
     </style>
 </head>
 
@@ -815,62 +176,71 @@
         </div>
         <div class="container">
             <h2 class="section-title">Notícias</h2>
-            <div id="news-list">Loading...</div>
+            <div id="news-list"><div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div></div>
         </div>
     </div>
 
     <div id="view-disco" class="view-section">
         <div class="discography-container">
             <h2 class="section-title">Discografia</h2>
-            <div id="disco-grid" class="single-grid">Loading...</div>
+            <div id="disco-grid" class="single-grid"><div style="text-align:center; grid-column:1/-1; color:#aaa;">Carregando...</div></div>
         </div>
     </div>
 
     <div id="view-members" class="view-section">
         <div class="container">
             <h2 class="section-title">Membros</h2>
+            
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="setMemberFilter('gen', this)">Por Geração</button>
+                <button class="filter-btn" onclick="setMemberFilter('team', this)">Por Team</button>
+            </div>
+
             <div id="scroll-buttons"></div>
-            <div id="members-container">Loading...</div>
+            <div id="members-container"><div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div></div>
         </div>
     </div>
 
     <div id="member-modal" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal()">✕</button>
-
+            <button class="modal-close-btn" onclick="closeModal('member-modal')"><i class="fas fa-times"></i></button>
             <div class="modal-header-bg"></div>
-
-            <div style="display:flex; justify-content:center;">
-                <img id="m-cover" class="modal-profile-img" src="">
-            </div>
-
+            <div style="display:flex; justify-content:center;"><img id="m-cover" class="modal-profile-img" src=""></div>
             <div class="modal-body">
                 <div class="modal-title" id="m-name">Nome</div>
                 <div class="modal-sub" id="m-team">Team</div>
-
                 <div class="tabs">
                     <button class="tab-btn active" onclick="tab('perfil', this)">Perfil</button>
                     <button class="tab-btn" onclick="tab('galeria', this)">Galeria</button>
-                    <button class="tab-btn" onclick="tab('part', this)">Participações</button>
+                    <button class="tab-btn" onclick="tab('part', this)">Músicas</button>
                 </div>
-
                 <div id="tab-perfil" class="tab-content active">
-                    <p id="m-bio" style="line-height:1.7; color:#555; font-size:0.95rem;">Carregando perfil...</p>
+                    <p id="m-bio" style="line-height:1.7; color:#555; font-size:0.9rem; padding:0 10px;">...</p>
                 </div>
-                <div id="tab-galeria" class="tab-content">
-                    <div id="m-gallery" class="gallery-grid"></div>
-                </div>
-                <div id="tab-part" class="tab-content">
-                    <div id="m-part"></div>
-                </div>
+                <div id="tab-galeria" class="tab-content"><div id="m-gallery" class="gallery-grid"></div></div>
+                <div id="tab-part" class="tab-content"><div id="m-part"></div></div>
             </div>
+        </div>
+    </div>
+
+    <div id="disco-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('disco-modal')"><i class="fas fa-times"></i></button>
+            
+            <div class="disco-header-info">
+                <img id="dm-cover" class="disco-cover-large" src="">
+                <div id="dm-title" class="disco-title-large">Título</div>
+                <div id="dm-sub" class="disco-sub-large">Tipo</div>
+            </div>
+
+            <div id="dm-content" style="padding: 0 20px 40px 20px;"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('view-home', this)"><i class="fas fa-home"></i> Home</button>
         <button class="nav-item" onclick="switchTab('view-disco', this)"><i class="fas fa-compact-disc"></i> Disco</button>
-        <button class="nav-item" onclick="switchTab('view-members', this)"><i class="fas fa-users"></i> Members</button>
+        <button class="nav-item" onclick="switchTab('view-members', this)"><i class="fas fa-users"></i> Membros</button>
     </div>
 
     <script>
@@ -879,6 +249,10 @@
         const T_NEWS = 'Noticias';
         const T_DISCO = 'Discografia';
         const T_MEMBERS = 'tblaFURTBeUVGx6IW';
+
+        // Variável global para armazenar membros e o filtro atual
+        let loadedMembers = [];
+        let currentFilter = 'gen'; // 'gen' ou 'team'
 
         function switchTab(id, el) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
@@ -890,59 +264,40 @@
 
         async function init() {
             try {
-                const nRes = await fetch(
-                    `https://api.airtable.com/v0/${BASE_ID}/${T_NEWS}?sort%5B0%5D%5Bfield%5D=Data&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=5`, {
-                        headers: {
-                            Authorization: `Bearer ${API_KEY}`
-                        }
-                    }
-                );
+                // News
+                const nRes = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${T_NEWS}?sort%5B0%5D%5Bfield%5D=Data&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=5`, { headers: { Authorization: `Bearer ${API_KEY}` } });
                 const nData = await nRes.json();
                 renderNews(nData.records);
 
-                const dRes = await fetch(
-                    `https://api.airtable.com/v0/${BASE_ID}/${T_DISCO}?sort%5B0%5D%5Bfield%5D=Data&sort%5B0%5D%5Bdirection%5D=desc`, {
-                        headers: {
-                            Authorization: `Bearer ${API_KEY}`
-                        }
-                    }
-                );
+                // Disco
+                const dRes = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${T_DISCO}?sort%5B0%5D%5Bfield%5D=Data&sort%5B0%5D%5Bdirection%5D=desc`, { headers: { Authorization: `Bearer ${API_KEY}` } });
                 const dData = await dRes.json();
                 renderDisco(dData.records);
 
-                const mRes = await fetch(
-                    `https://api.airtable.com/v0/${BASE_ID}/${T_MEMBERS}?sort%5B0%5D%5Bfield%5D=Geracao&sort%5B1%5D%5Bfield%5D=Nome`, {
-                        headers: {
-                            Authorization: `Bearer ${API_KEY}`
-                        }
-                    }
-                );
+                // Members (Salva na variável global)
+                const mRes = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${T_MEMBERS}?sort%5B0%5D%5Bfield%5D=Geracao&sort%5B1%5D%5Bfield%5D=Nome`, { headers: { Authorization: `Bearer ${API_KEY}` } });
                 const mData = await mRes.json();
-                renderMembers(mData.records);
-            } catch (e) {
-                console.error(e);
-            }
+                loadedMembers = mData.records || [];
+                renderMembers(); // Renderiza com o filtro padrão (gen)
+            } catch (e) { console.error(e); }
         }
 
         function renderNews(list) {
             const c = document.getElementById('news-list');
             c.innerHTML = '';
-            if (!list || list.length === 0) {
-                c.innerHTML = '<p style="text-align:center;color:#999">Sem notícias.</p>';
-                return;
-            }
+            if (!list || list.length === 0) { c.innerHTML = '<p style="text-align:center;color:#999">Sem notícias.</p>'; return; }
             list.forEach(r => {
                 const f = r.fields;
                 const d = f.Data ? f.Data.split('-') : ['', '', ''];
                 c.innerHTML += `
-        <div class="news-item">
-          <div class="news-date"><span>${d[2] || ''}</span>${d[1] || ''}</div>
-          <div class="news-content">
-            <span class="news-tag">${f.Categoria || ''}</span>
-            <h4>${f.Titulo || ''}</h4>
-            <div class="news-text">${f.Texto || ''}</div>
-          </div>
-        </div>`;
+                <div class="news-item">
+                    <div class="news-date"><span>${d[2] || ''}</span>${d[1] || ''}</div>
+                    <div class="news-content">
+                        <span class="news-tag">${f.Categoria || 'News'}</span>
+                        <h4>${f.Titulo || ''}</h4>
+                        <div class="news-text">${f.Texto || ''}</div>
+                    </div>
+                </div>`;
             });
         }
 
@@ -962,257 +317,198 @@
 
             list.forEach((r, i) => {
                 const f = r.fields;
-                const pid = `p-${i}`;
+                const safeData = encodeURIComponent(JSON.stringify({
+                    title: f.Titulo, type: f.Tipo, cover: f.Capa, content: f.Tracklist
+                }));
+
                 c.innerHTML += `
-        <div class="single-card" onclick="toggle('${pid}')">
-          <div class="single-cover">
-            <img src="${f.Capa || ''}" loading="lazy">
-            <div class="single-info">${f.Titulo || ''}<span>${f.Tipo || ''}</span></div>
-          </div>
-        </div>
-        <div id="${pid}" class="single-details-panel">${f.Tracklist || '...'}</div>`;
+                <div class="single-card" onclick="openDiscoModal('${safeData}')">
+                    <div class="single-cover"><img src="${f.Capa || ''}" loading="lazy"></div>
+                    <div class="single-info">
+                        <div class="single-title-text">${f.Titulo || ''}</div>
+                        <div class="single-type-text">${f.Tipo || ''}</div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function openDiscoModal(json) {
+            const data = JSON.parse(decodeURIComponent(json));
+            document.getElementById('dm-title').innerText = data.title;
+            document.getElementById('dm-sub').innerText = data.type;
+            document.getElementById('dm-cover').src = data.cover || '';
+            const contentBox = document.getElementById('dm-content');
+            contentBox.innerHTML = data.content || '<p style="text-align:center;color:#999">Sem detalhes.</p>';
+
+            const navBtns = contentBox.querySelectorAll('.modal-nav-btn');
+            navBtns.forEach(btn => {
+                btn.onclick = function() {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    contentBox.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                    const target = this.getAttribute('data-section');
+                    const section = contentBox.querySelector(`.modal-section[data-section="${target}"]`);
+                    if(section) section.classList.add('active');
+                }
+            });
+            document.getElementById('disco-modal').classList.add('active');
+        }
+
+        // === FILTROS DE MEMBROS ===
+        function setMemberFilter(type, btn) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            renderMembers();
+        }
+
+        function renderMembers() {
+            const container = document.getElementById('members-container');
+            const buttons = document.getElementById('scroll-buttons');
+            container.innerHTML = '';
+            buttons.innerHTML = '';
+
+            if (loadedMembers.length === 0) { container.innerHTML = '<p style="text-align:center;color:#999">Vazio.</p>'; return; }
+
+            const EX_STATUSES = new Set(['Graduada', 'Demitida', 'Expulsa']);
+            const groups = {}; // Pode ser geração ou team
+            const exMembers = [];
+
+            loadedMembers.forEach(r => {
+                const f = r.fields || {};
+                const status = (f.Status || '').trim();
+                const memberObj = {
+                    Nome: f.Nome || '', Time: f.Time || 'Sem Time', Geracao: f.Geracao || 'Outros', Status: status,
+                    Foto: f.Foto || null, Perfil: f.Perfil || 'Sem biografia.',
+                    Galeria: f.Galeria || [], Participacoes: f.Participacoes || ''
+                };
+
+                if (EX_STATUSES.has(status)) { 
+                    exMembers.push(memberObj); 
+                } else {
+                    // Decide o critério de agrupamento
+                    let key = (currentFilter === 'team') ? memberObj.Time : memberObj.Geracao;
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(memberObj);
+                }
             });
 
-            // === AQUI ESTÁ A CORREÇÃO ===
-            // Espera meio segundo para garantir que o HTML foi inserido
-            // e adiciona o evento de clique nos botões que vieram do banco de dados
-            setTimeout(() => {
-                document.querySelectorAll('.modal-nav-btn').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation(); // Não fechar o card
+            function makeCard(m) {
+                const photoUrl = (m.Foto && m.Foto[0] && m.Foto[0].url) ? m.Foto[0].url : 'https://placehold.co/300';
+                const payload = encodeURIComponent(JSON.stringify({
+                    name: m.Nome, team: m.Time, gen: m.Geracao, photo: photoUrl,
+                    bio: m.Perfil, gallery: m.Galeria ? m.Galeria.map(g => g.url) : [],
+                    part: m.Participacoes, status: m.Status
+                }));
+                return `
+                <div class="member-card" onclick="openMember('${payload}')">
+                    <div class="member-photo-container"><img src="${photoUrl}" loading="lazy"></div>
+                    <div class="member-info-box">
+                        <div class="member-name-text">${m.Nome}</div>
+                        <div class="member-team-text">${m.Time}</div>
+                    </div>
+                </div>`;
+            }
 
-                        // 1. Identificar o painel pai e a seção alvo
-                        const panel = this.closest('.single-details-panel');
-                        const targetSection = this.dataset.section;
-
-                        // 2. Resetar botões
-                        panel.querySelectorAll('.modal-nav-btn').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-
-                        // 3. Trocar abas
-                        panel.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
-                        panel.querySelector(`.modal-section[data-section="${targetSection}"]`).classList.add('active');
-                    }
+            // Ordem das chaves
+            let sortedKeys = Object.keys(groups).sort();
+            
+            // Se for team, podemos forçar uma ordem específica se quiser, senão alfabética
+            if(currentFilter === 'team') {
+                // Exemplo de ordem forçada: Team C, Team T, Team L...
+                const order = ['Team C', 'Team T', 'Team L', 'Team Kenkyuusei'];
+                sortedKeys = sortedKeys.sort((a,b) => {
+                    return order.indexOf(a) - order.indexOf(b);
                 });
-            }, 500);
+            }
+
+            sortedKeys.forEach((key, idx) => {
+                const btnId = `group-${idx}`;
+                buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">${key}</button>`;
+                let html = '';
+                groups[key].forEach(m => html += makeCard(m));
+                container.innerHTML += `<div id="${btnId}" class="generation-group"><h3 class="generation-title">${key}</h3><div class="member-grid-layout">${html}</div></div>`;
+            });
+
+            // Ex-membros sempre no final
+            if (exMembers.length) {
+                const exId = 'gen-ex';
+                buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${exId}').scrollIntoView({behavior:'smooth', block:'start'})">Ex-membros</button>`;
+                let exHtml = '';
+                exMembers.sort((a,b) => a.Nome.localeCompare(b.Nome)).forEach(m => exHtml += makeCard(m));
+                container.innerHTML += `<div id="${exId}" class="generation-group"><h3 class="generation-title">Ex-membros</h3><div class="member-grid-layout">${exHtml}</div></div>`;
+            }
+            
+            // Ativa visual do primeiro botão de scroll
+            const btns = document.querySelectorAll('.button-gen');
+            if(btns.length > 0) btns[0].classList.add('active');
+            btns.forEach(b => b.onclick = function(e){
+                btns.forEach(x=>x.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+                document.getElementById(targetId).scrollIntoView({behavior:'smooth', block:'start'});
+            });
         }
-
-        function toggle(id) {
-            const el = document.getElementById(id);
-            const open = el.classList.contains('is-visible');
-            document.querySelectorAll('.single-details-panel').forEach(x => x.classList.remove('is-visible'));
-            if (!open) el.classList.add('is-visible');
-        }
-
-        function renderMembers(list) {
-  const container = document.getElementById('members-container');
-  const buttons = document.getElementById('scroll-buttons');
-  container.innerHTML = '';
-  buttons.innerHTML = '';
-
-  if (!list || list.length === 0) {
-    container.innerHTML = '<p style="text-align:center;color:#999">Nenhum membro cadastrado.</p>';
-    return;
-  }
-
-  const EX_STATUSES = new Set(['Graduada', 'Demitida', 'Expulsa']);
-
-  const gens = {};       // ativos por geração
-  const exMembers = [];  // ex-membros (todos juntos)
-
-  list.forEach(r => {
-    const f = r.fields || {};
-    const status = (f.Status || '').trim();
-
-    // monta objeto do membro (para reusar nas duas listas)
-    const memberObj = {
-      Nome: f.Nome || '',
-      Time: f.Time || '',
-      Geracao: f.Geracao || 'Outros',
-      Status: status,
-      Foto: f.Foto || null,
-      Perfil: f.Perfil || 'Sem biografia.',
-      Galeria: f.Galeria || [],
-      Participacoes: f.Participacoes || ''
-    };
-
-    // separa ex-membros
-    if (EX_STATUSES.has(status)) {
-      exMembers.push(memberObj);
-      return;
-    }
-
-    // ativos por geração
-    const g = memberObj.Geracao || 'Outros';
-    if (!gens[g]) gens[g] = [];
-    gens[g].push(memberObj);
-  });
-
-  // helper para criar card
-  function memberCardHTML(m) {
-    const photoUrl = (m.Foto && m.Foto[0] && m.Foto[0].url) ? m.Foto[0].url : 'https://placehold.co/300';
-    const payload = encodeURIComponent(JSON.stringify({
-      name: m.Nome || '',
-      team: m.Time || '',
-      gen: m.Geracao || '',
-      photo: photoUrl,
-      bio: m.Perfil || 'Sem biografia.',
-      gallery: m.Galeria ? m.Galeria.map(g => g.url) : [],
-      part: m.Participacoes || '',
-      status: m.Status || ''
-    }));
-
-    return `
-      <div class="member-card" onclick="openMember('${payload}')">
-        <div class="member-photo-container">
-          <img src="${photoUrl}" loading="lazy">
-        </div>
-        <div class="member-info-box">
-          <div class="member-name-text">${m.Nome || ''}</div>
-          <div class="member-team-text">${m.Time || ''}</div>
-        </div>
-      </div>`;
-  }
-
-  // 1) render gerações (ativos)
-  const sortedGens = Object.keys(gens).sort();
-
-  sortedGens.forEach((gen, idx) => {
-    const btnId = `gen-${String(gen).replace(/\s+/g, '')}-${idx}`;
-
-    buttons.innerHTML += `
-      <button class="button-gen"
-        onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">
-        ${gen}
-      </button>`;
-
-    let membersHtml = '';
-    gens[gen].forEach(m => { membersHtml += memberCardHTML(m); });
-
-    container.innerHTML += `
-      <div id="${btnId}" class="generation-group">
-        <h3 class="generation-title">${gen}</h3>
-        <div class="member-grid-layout">${membersHtml}</div>
-      </div>`;
-  });
-
-  // 2) render Ex-membros no final (se existir)
-  if (exMembers.length) {
-    // ordena ex-membros: primeiro por status (os 3 juntos), depois por nome
-    const statusOrder = { 'Graduada': 1, 'Demitida': 2, 'Expulsa': 3 };
-    exMembers.sort((a, b) => {
-      const sa = statusOrder[a.Status] || 99;
-      const sb = statusOrder[b.Status] || 99;
-      if (sa !== sb) return sa - sb;
-      return (a.Nome || '').localeCompare(b.Nome || '', 'pt-BR', { sensitivity: 'base' });
-    });
-
-    // botão "Ex-membros"
-    const exId = 'gen-ex-members';
-    buttons.innerHTML += `
-      <button class="button-gen"
-        onclick="document.getElementById('${exId}').scrollIntoView({behavior:'smooth', block:'start'})">
-        Ex-membros
-      </button>`;
-
-    let exHtml = '';
-    exMembers.forEach(m => { exHtml += memberCardHTML(m); });
-
-    container.innerHTML += `
-      <div id="${exId}" class="generation-group">
-        <h3 class="generation-title">Ex-membros</h3>
-        <div class="member-grid-layout">${exHtml}</div>
-      </div>`;
-  }
-}
 
         function openMember(json) {
             const data = JSON.parse(decodeURIComponent(json));
-
-            document.getElementById('m-cover').src = data.photo || 'https://placehold.co/300';
-            document.getElementById('m-name').innerText = data.name || '';
-           const status = (data.status || "").trim();
-
-let extra = "";
-if (status === "Graduada") extra = " • Graduada";
-
-document.getElementById('m-team').innerText =
-  `${data.team || ''}${data.gen ? ` • ${data.gen}` : ''}${extra}`;
-
+            document.getElementById('m-cover').src = data.photo;
+            document.getElementById('m-name').innerText = data.name;
+            let extra = data.status === 'Graduada' ? ' • Graduada' : '';
+            document.getElementById('m-team').innerText = `${data.team} • ${data.gen}${extra}`;
             document.getElementById('m-bio').innerText = data.bio || 'Sem biografia.';
 
             const gal = document.getElementById('m-gallery');
             gal.innerHTML = '';
-            if (data.gallery && data.gallery.length) {
-                data.gallery.forEach(url => {
-                    gal.innerHTML += `<img src="${url}" loading="lazy">`;
-                });
+            if (data.gallery.length) {
+                data.gallery.forEach(url => gal.innerHTML += `<img src="${url}" loading="lazy">`);
             } else {
-                gal.innerHTML = '<p style="grid-column:1/-1; color:#999; text-align:center;">Sem fotos extras.</p>';
+                gal.innerHTML = '<p style="grid-column:1/-1;color:#999;text-align:center;">Sem fotos.</p>';
             }
 
             const partContainer = document.getElementById('m-part');
             partContainer.innerHTML = '';
-
             try {
                 if (data.part) {
                     const participations = JSON.parse(data.part);
+                    if(participations.length === 0) throw "Vazio";
+
                     participations.forEach(p => {
-                        const tracks = Array.isArray(p.tracks) ? p.tracks : (p.tracks ? [p.tracks] : []);
+                        const tracks = Array.isArray(p.tracks) ? p.tracks : [p.tracks];
                         let tracksHtml = '';
+                        const LABEL_TEXT = { "a-side": "A-side", "b-side": "B-side", "undergirls": "Undergirls", "unit": "Unit", "solo": "Solo", "center": "Center", "w-center": "W-Center" };
 
                         tracks.forEach(t => {
-                            const labelsArr = Array.isArray(t.labels) ? t.labels : [];
-                            const LABEL_TEXT = {
-                                "a-side": "A-side",
-                                "b-side": "B-side",
-                                "undergirls": "Undergirls",
-                                "under-girls": "Undergirls",
-                                "unit": "Unit",
-                                "solo": "Solo",
-                                "center": "Center",
-                                "w-center": "W-Center"
-                            };
-
-                            const labelsHtml = labelsArr.map(l => {
-                                const key = String(l || "").toLowerCase().trim();
-                                const text = LABEL_TEXT[key] || l; // fallback se vier algo novo
-                                return `<span class="label ${key}">${text}</span>`;
+                            const labels = Array.isArray(t.labels) ? t.labels : [];
+                            const labelsHtml = labels.map(l => {
+                                const k = String(l).toLowerCase();
+                                return `<span class="label ${k}">${LABEL_TEXT[k] || l}</span>`;
                             }).join('');
-
-                            // extra: se tiver unitName vindo do admin, mostra como tag também
-                            const unitName = (t.unitName || "").trim();
-                            const unitNameHtml = unitName ? `<span class="label unit">${unitName}</span>` : "";
-
-                            tracksHtml += `<li>${t.title || ''} ${labelsHtml}${unitNameHtml}</li>`;
-
+                            const unitHtml = t.unitName ? `<span class="label unit">${t.unitName}</span>` : '';
+                            
+                            tracksHtml += `
+                            <li>
+                                <span class="song-name">${t.title || 'Música'}</span>
+                                <div class="song-badges">${unitHtml}${labelsHtml}</div>
+                            </li>`;
                         });
 
                         partContainer.innerHTML += `
-            <h4 class="singles-title">${p.single || ''}</h4>
-            <ul class="participation-list">${tracksHtml}</ul>`;
+                        <div class="part-card">
+                            <div class="part-header">${p.single || 'Single'}</div>
+                            <ul class="part-list">${tracksHtml}</ul>
+                        </div>`;
                     });
-                } else {
-                    partContainer.innerHTML = '<p style="color:#999;">Sem participações registradas.</p>';
-                }
+                } else { throw "Vazio"; }
             } catch (e) {
-                console.error("Erro JSON Participacoes", e);
-                partContainer.innerHTML = '<p style="color:#999;">Erro ao ler participações.</p>';
+                partContainer.innerHTML = '<p style="color:#999;text-align:center;margin-top:20px;">Nenhuma participação encontrada.</p>';
             }
 
-            // volta pra aba Perfil sempre que abrir
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            const firstBtn = document.querySelector('.tab-btn');
-            if (firstBtn) firstBtn.classList.add('active');
-            document.getElementById('tab-perfil').classList.add('active');
-
+            tab('perfil', document.querySelector('.tab-btn'));
             document.getElementById('member-modal').classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('member-modal').classList.remove('active');
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function tab(t, el) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1221,16 +517,13 @@ document.getElementById('m-team').innerText =
             document.getElementById('tab-' + t).classList.add('active');
         }
 
-        // Fechar modal clicando fora
         document.addEventListener('click', (e) => {
-            const overlay = document.getElementById('member-modal');
-            if (!overlay) return;
-            if (overlay.classList.contains('active') && e.target === overlay) closeModal();
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
         });
 
-        // Inicia
         init();
     </script>
 </body>
-
 </html>
