@@ -2,1108 +2,453 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CTL48 Official App</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary: #e91e63;
-            --primary-soft: #fce4ec;
-            --dark: #333333;
-            --text-gray: #666666;
-            --bg: #fafafa;
-            --white: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--dark);
-            font-family: 'Roboto', sans-serif;
-            padding-bottom: 90px;
-            overflow-x: hidden;
-        }
-
-        /* HEADER */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1);
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--primary);
-            letter-spacing: 2px;
-        }
-
-        /* HERO */
-        .hero {
-            position: relative;
-            height: 340px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 25px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2);
-        }
-
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            filter: brightness(0.6);
-        }
-
-        .hero-tag {
-            background: var(--primary);
-            width: fit-content;
-            padding: 6px 14px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            border-radius: 50px;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .hero-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero-sub {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
-        .container {
-            padding: 10px 20px;
-        }
-
-        .section-title {
-            font-family: 'Montserrat';
-            font-weight: 900;
-            font-size: 1.3rem;
-            margin: 20px 0;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title::before {
-            content: '';
-            display: block;
-            width: 6px;
-            height: 24px;
-            background: var(--primary);
-            margin-right: 10px;
-            border-radius: 10px;
-        }
-
-        /* VIEW SECTIONS */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            min-height: calc(100vh - 165px);
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* NEWS */
-        .news-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            background: white;
-            padding: 15px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .news-date {
-            font-weight: 700;
-            color: #ccc;
-            font-size: 0.7rem;
-            min-width: 50px;
-            text-align: center;
-            line-height: 1.1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .news-date span {
-            display: block;
-            font-size: 1.6rem;
-            color: var(--primary);
-            font-weight: 900;
-        }
-
-        .news-content h4 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-            line-height: 1.3;
-            font-weight: 800;
-            color: var(--dark);
-        }
-
-        .news-tag {
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: var(--primary);
-            background: var(--primary-soft);
-            padding: 3px 10px;
-            border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        .news-text {
-            font-size: 0.85rem;
-            color: var(--text-gray);
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* DISCOGRAFIA */
-        .discography-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .single-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .single-card {
-            position: relative;
-            background: #fff;
-            border-radius: 18px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            transition: transform .2s ease;
-        }
-
-        .single-card:active {
-            transform: scale(0.96);
-        }
-
-        .single-cover img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            display: block;
-        }
-
-        .single-info {
-            padding: 12px;
-            background: white;
-            text-align: center;
-        }
-
-        .single-title-text {
-            font-weight: 800;
-            font-size: 0.9rem;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .single-type-text {
-            font-size: 0.7rem;
-            color: var(--primary);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        /* FILTROS MEMBROS */
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .filter-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #eee;
-            background: #fff;
-            font-weight: 700;
-            color: #777;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
-        }
-
-        /* MEMBERS LIST */
-        #scroll-buttons {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 5px;
-            margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        #scroll-buttons::-webkit-scrollbar {
-            display: none;
-        }
-
-        .button-gen {
-            white-space: nowrap;
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: 1px solid #eee;
-            background: white;
-            color: #777;
-            font-size: 0.85rem;
-            font-weight: 700;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-            transition: all 0.2s;
-        }
-
-        .button-gen.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
-        }
-
-        .generation-title {
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin: 30px 0 15px 0;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-left: 15px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .member-grid-layout {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-
-        .member-card {
-            background: white;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-        }
-
-        .member-photo-container img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-        }
-
-        .member-info-box {
-            padding: 10px 5px;
-            text-align: center;
-        }
-
-        .member-name-text {
-            font-weight: 800;
-            font-size: 0.8rem;
-            color: var(--dark);
-            margin-bottom: 2px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .member-team-text {
-            font-size: 0.65rem;
-            color: #aaa;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* === MODALS (Pop-ups) === */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: flex-end;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            animation: fadeIn 0.3s forwards;
-        }
-
-        .modal-content {
-            background: white;
-            width: 100%;
-            height: 90vh;
-            border-radius: 25px 25px 0 0;
-            overflow-y: auto;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            animation: slideUp 0.3s ease;
-            box-shadow: 0 -5px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            color: #333;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* MODAL PERFIL HEADER */
-        .modal-header-bg {
-            height: 150px;
-            background: linear-gradient(45deg, #ff80ab, #e91e63);
-            width: 100%;
-            flex-shrink: 0;
-        }
-
-        .modal-profile-img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            border: 5px solid white;
-            object-fit: cover;
-            margin-top: -65px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-            background: #fff;
-            align-self: center;
-        }
-
-        .modal-body {
-            padding: 10px 25px 100px 25px;
-            text-align: center;
-        }
-
-        .modal-title {
-            font-family: 'Montserrat';
-            font-weight: 900;
-            font-size: 1.6rem;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            color: var(--dark);
-        }
-
-        .modal-sub {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* MODAL DISCOGRAFIA HEADER */
-        .disco-header-info {
-            padding: 30px 25px 10px 25px;
-            text-align: center;
-        }
-
-        .disco-cover-large {
-            width: 140px;
-            height: 140px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            margin-bottom: 15px;
-        }
-
-        .disco-title-large {
-            font-family: 'Montserrat';
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-
-        .disco-sub-large {
-            color: var(--primary);
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* TABS GERAIS */
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 25px;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #ccc;
-            padding: 10px 5px;
-            border-bottom: 3px solid transparent;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-            text-align: left;
-            width: 100%;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        /* === ESTILOS DO CONTEÚDO HTML DO ADMIN (Formação, Tracklist) === */
-        .modal-nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .modal-nav-btn {
-            background: #f5f5f5;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 700;
-            color: #777;
-            font-size: 0.85rem;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .modal-nav-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
-        }
-
-        .modal-section {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-
-        .modal-section.active {
-            display: block;
-        }
-
-        .tracklist {
-            list-style: none;
-            padding: 0;
-        }
-
-        .tracklist li {
-            padding: 12px 0;
-            border-bottom: 1px dashed #eee;
-            font-size: 0.9rem;
-            color: #555;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .tracklist li:last-child {
-            border-bottom: none;
-        }
-
-        .tracklist a {
-            font-weight: 600;
-            color: var(--dark);
-            text-decoration: none;
-        }
-
-        .formation-group {
-            margin-bottom: 30px;
-        }
-
-        .formation-title {
-            text-align: center;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .member-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .member-card-static {
-            background: #fff;
-            border-radius: 12px;
-            padding: 10px 5px;
-            text-align: center;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
-            border: 1px solid #f9f9f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .member-photo {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 8px;
-            border: 3px solid #f0f0f0;
-        }
-
-        .member-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Borda Rosa no Center */
-        .member-card-static.is-center .member-photo {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.2);
-        }
-
-        .member-info h3 {
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: var(--dark);
-            margin: 0;
-        }
-
-        .member-info p {
-            font-size: 0.65rem;
-            color: #999;
-            margin-top: 2px;
-            font-weight: 500;
-        }
-
-        .formation-separator {
-            border: 0;
-            height: 1px;
-            background: var(--primary-soft);
-            margin: 20px auto;
-            width: 80%;
-        }
-
-        /* Esconde o JSON de dados que o Admin salva */
-        #ctl48-formation-data,
-        #data-json {
-            display: none !important;
-        }
-
-        /* Labels */
-        .label {
-            font-size: 0.6em;
-            padding: 2px 8px;
-            border-radius: 8px;
-            color: white;
-            margin-left: 5px;
-            vertical-align: middle;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .label.a-side {
-            background-color: #4a90e2;
-        }
-
-        .label.b-side {
-            background-color: #ff9800;
-        }
-
-        .label.center {
-            background-color: #e91e63;
-        }
-
-        .label.unit {
-            background-color: #9c27b0;
-        }
-
-        .label.solo {
-            background-color: #ff4081;
-        }
-
-        /* PARTICIPAÇÕES CARDS (PERFIL) */
-        #m-part {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .part-card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            border: 1px solid #fafafa;
-            overflow: hidden;
-        }
-
-        .part-header {
-            background: var(--primary-soft);
-            padding: 12px 15px;
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .part-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .part-list li {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f5f5f5;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            color: var(--dark);
-        }
-
-        .part-list li:last-child {
-            border-bottom: none;
-        }
-
-        .song-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .song-badges {
-            display: flex;
-            gap: 4px;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-        }
-
-        .gallery-grid img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        /* NAV BOTTOM */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 75px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            display: flex;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom);
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.03);
-        }
-
-        .nav-item {
-            flex: 1;
-            border: none;
-            background: none;
-            color: #ccc;
-            font-size: 0.65rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 4px;
-            transition: 0.2s;
-        }
-
-        .nav-item.active i {
-            transform: translateY(-3px);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CTL48 Official App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* (Seu CSS original mantido intacto para economizar espaço) */
+    :root { --primary: #e91e63; --primary-soft: #fce4ec; --dark: #333333; --text-gray: #666666; --bg: #fafafa; --white: #ffffff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--dark); font-family: 'Roboto', sans-serif; padding-bottom: 90px; overflow-x: hidden; }
+    .header { background: rgba(255, 255, 255, 0.95); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1); text-align: center; backdrop-filter: blur(10px); }
+    .logo { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--primary); letter-spacing: 2px; }
+    .hero { position: relative; height: 340px; color: white; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; overflow: hidden; margin-bottom: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2); }
+    .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: brightness(0.6); }
+    .hero-tag { background: var(--primary); width: fit-content; padding: 6px 14px; font-size: 0.7rem; font-weight: 900; border-radius: 50px; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .hero-title { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1.1; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); }
+    .hero-sub { font-size: 0.9rem; opacity: 0.9; font-weight: 500; }
+    .container { padding: 10px 20px; }
+    .section-title { font-family: 'Montserrat'; font-weight: 900; font-size: 1.3rem; margin: 20px 0; color: var(--dark); display: flex; align-items: center; }
+    .section-title::before { content: ''; display: block; width: 6px; height: 24px; background: var(--primary); margin-right: 10px; border-radius: 10px; }
+    .view-section { display: none; animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1); min-height: calc(100vh - 165px); }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .news-item { display: flex; gap: 15px; margin-bottom: 15px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); }
+    .news-date { font-weight: 700; color: #ccc; font-size: 0.7rem; min-width: 50px; text-align: center; line-height: 1.1; display: flex; flex-direction: column; justify-content: center; }
+    .news-date span { display: block; font-size: 1.6rem; color: var(--primary); font-weight: 900; }
+    .news-content h4 { font-size: 1rem; margin-bottom: 5px; line-height: 1.3; font-weight: 800; color: var(--dark); }
+    .news-tag { font-size: 0.65rem; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; }
+    .news-text { font-size: 0.85rem; color: var(--text-gray); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .discography-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .single-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .single-card { position: relative; background: #fff; border-radius: 18px; overflow: hidden; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); transition: transform .2s ease; }
+    .single-card:active { transform: scale(0.96); }
+    .single-cover img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+    .single-info { padding: 12px; background: white; text-align: center; }
+    .single-title-text { font-weight: 800; font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .single-type-text { font-size: 0.7rem; color: var(--primary); font-weight: 600; text-transform: uppercase; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+    .filter-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #eee; background: #fff; font-weight: 700; color: #777; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+    .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3); }
+    #scroll-buttons { display: flex; gap: 8px; overflow-x: auto; padding: 5px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+    #scroll-buttons::-webkit-scrollbar { display: none; }
+    .button-gen { white-space: nowrap; padding: 10px 20px; border-radius: 50px; border: 1px solid #eee; background: white; color: #777; font-size: 0.85rem; font-weight: 700; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03); transition: all 0.2s; }
+    .button-gen.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3); }
+    .generation-title { font-size: 1.1rem; color: var(--primary); margin: 30px 0 15px 0; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding-left: 15px; border-left: 4px solid var(--primary); }
+    .member-grid-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .member-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04); }
+    .member-photo-container img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+    .member-info-box { padding: 10px 5px; text-align: center; }
+    .member-name-text { font-weight: 800; font-size: 0.8rem; color: var(--dark); margin-bottom: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .member-team-text { font-size: 0.65rem; color: #aaa; font-weight: 700; text-transform: uppercase; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(5px); }
+    .modal-overlay.active { display: flex; animation: fadeIn 0.3s forwards; }
+    .modal-content { background: white; width: 100%; height: 90vh; border-radius: 25px 25px 0 0; overflow-y: auto; position: relative; display: flex; flex-direction: column; animation: slideUp 0.3s ease; box-shadow: 0 -5px 40px rgba(0, 0, 0, 0.2); }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-close-btn { position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.8); color: #333; width: 35px; height: 35px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; z-index: 20; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: center; }
+    .modal-header-bg { height: 150px; background: linear-gradient(45deg, #ff80ab, #e91e63); width: 100%; flex-shrink: 0; }
+    .modal-profile-img { width: 130px; height: 130px; border-radius: 50%; border: 5px solid white; object-fit: cover; margin-top: -65px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); background: #fff; align-self: center; }
+    .modal-body { padding: 10px 25px 100px 25px; text-align: center; }
+    .modal-title { font-family: 'Montserrat'; font-weight: 900; font-size: 1.6rem; margin-top: 15px; margin-bottom: 5px; color: var(--dark); }
+    .modal-sub { color: #888; font-size: 0.9rem; margin-bottom: 25px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .disco-header-info { padding: 30px 25px 10px 25px; text-align: center; }
+    .disco-cover-large { width: 140px; height: 140px; border-radius: 12px; object-fit: cover; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); margin-bottom: 15px; }
+    .disco-title-large { font-family: 'Montserrat'; font-weight: 900; font-size: 1.4rem; color: var(--dark); margin-bottom: 5px; }
+    .disco-sub-large { color: var(--primary); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; }
+    .tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 25px; justify-content: center; gap: 15px; margin-top: 15px; }
+    .tab-btn { background: none; border: none; font-weight: 700; font-size: 0.9rem; color: #ccc; padding: 10px 5px; border-bottom: 3px solid transparent; transition: 0.3s; cursor: pointer; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-content { display: none; text-align: left; width: 100%; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    .modal-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+    .modal-nav-btn { background: #f5f5f5; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; color: #777; font-size: 0.85rem; transition: 0.2s; cursor: pointer; }
+    .modal-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3); }
+    .modal-section { display: none; animation: fadeIn 0.3s; }
+    .modal-section.active { display: block; }
+    .tracklist { list-style: none; padding: 0; }
+    .tracklist li { padding: 12px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; color: #555; display: flex; justify-content: space-between; align-items: center; }
+    .tracklist li:last-child { border-bottom: none; }
+    .tracklist a { font-weight: 600; color: var(--dark); text-decoration: none; }
+    .formation-group { margin-bottom: 30px; }
+    .formation-title { text-align: center; font-weight: 800; font-size: 0.95rem; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+    .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; justify-content: center; }
+    .member-card-static { background: #fff; border-radius: 12px; padding: 10px 5px; text-align: center; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04); border: 1px solid #f9f9f9; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; }
+    .member-photo { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; margin-bottom: 8px; border: 3px solid #f0f0f0; }
+    .member-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .member-card-static.is-center .member-photo { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.2); }
+    .member-info h3 { font-size: 0.75rem; font-weight: 800; color: var(--dark); margin: 0; }
+    .member-info p { font-size: 0.65rem; color: #999; margin-top: 2px; font-weight: 500; }
+    .formation-separator { border: 0; height: 1px; background: var(--primary-soft); margin: 20px auto; width: 80%; }
+    #ctl48-formation-data, #data-json { display: none !important; }
+    .label { font-size: 0.6em; padding: 2px 8px; border-radius: 8px; color: white; margin-left: 5px; vertical-align: middle; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .label.a-side { background-color: #4a90e2; } .label.b-side { background-color: #ff9800; } .label.center { background-color: #e91e63; } .label.unit { background-color: #9c27b0; } .label.solo { background-color: #ff4081; }
+    #m-part { display: flex; flex-direction: column; gap: 15px; }
+    .part-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); border: 1px solid #fafafa; overflow: hidden; }
+    .part-header { background: var(--primary-soft); padding: 12px 15px; color: var(--primary); font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .part-list { list-style: none; padding: 0; margin: 0; }
+    .part-list li { padding: 12px 15px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--dark); }
+    .part-list li:last-child { border-bottom: none; }
+    .song-name { font-weight: 600; font-size: 0.85rem; }
+    .song-badges { display: flex; gap: 4px; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .gallery-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); display: flex; border-top: 1px solid rgba(0, 0, 0, 0.05); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.03); }
+    .nav-item { flex: 1; border: none; background: none; color: #ccc; font-size: 0.65rem; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .nav-item.active { color: var(--primary); }
+    .nav-item i { font-size: 1.5rem; margin-bottom: 4px; transition: 0.2s; }
+    .nav-item.active i { transform: translateY(-3px); }
+  </style>
 </head>
 
 <body>
 
-    <div class="header">
-        <div class="logo">CTL48</div>
-    </div>
+  <div class="header"><div class="logo">CTL48</div></div>
 
-    <div id="view-home" class="view-section active">
-        <div class="hero">
-            <img id="hero-bg" class="hero-bg" src="">
-            <div style="position:relative; z-index:2;">
-                <div class="hero-tag">ÚLTIMO LANÇAMENTO</div>
-                <h1 id="hero-title" class="hero-title">Carregando...</h1>
-                <p id="hero-sub" class="hero-sub"></p>
-            </div>
+  <div id="view-home" class="view-section active">
+    <div class="hero">
+      <img id="hero-bg" class="hero-bg" src="">
+      <div style="position:relative; z-index:2;">
+        <div class="hero-tag">ÚLTIMO LANÇAMENTO</div>
+        <h1 id="hero-title" class="hero-title">Carregando...</h1>
+        <p id="hero-sub" class="hero-sub"></p>
+      </div>
+    </div>
+    <div class="container">
+      <h2 class="section-title">Notícias</h2>
+      <div id="news-list"><div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div></div>
+    </div>
+  </div>
+
+  <div id="view-disco" class="view-section">
+    <div class="discography-container">
+      <h2 class="section-title">Discografia</h2>
+      <div id="disco-grid" class="single-grid"><div style="text-align:center; grid-column:1/-1; color:#aaa;">Carregando...</div></div>
+    </div>
+  </div>
+
+  <div id="view-members" class="view-section">
+    <div class="container">
+      <h2 class="section-title">Membros</h2>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setMemberFilter('gen', this)">Por Geração</button>
+        <button class="filter-btn" onclick="setMemberFilter('team', this)">Por Team</button>
+      </div>
+      <div id="scroll-buttons"></div>
+      <div id="members-container"><div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div></div>
+    </div>
+  </div>
+
+  <div id="member-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal('member-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-header-bg"></div>
+      <div style="display:flex; justify-content:center;"><img id="m-cover" class="modal-profile-img" src=""></div>
+      <div class="modal-body">
+        <div class="modal-title" id="m-name">Nome</div>
+        <div class="modal-sub" id="m-team">Team</div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="tab('perfil', this)">Perfil</button>
+          <button class="tab-btn" onclick="tab('galeria', this)">Galeria</button>
+          <button class="tab-btn" onclick="tab('part', this)">Músicas</button>
         </div>
-        <div class="container">
-            <h2 class="section-title">Notícias</h2>
-            <div id="news-list">
-                <div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div>
-            </div>
-        </div>
+        <div id="tab-perfil" class="tab-content active"><p id="m-bio" style="line-height:1.7; color:#555; font-size:0.9rem; padding:0 10px;">...</p></div>
+        <div id="tab-galeria" class="tab-content"><div id="m-gallery" class="gallery-grid"></div></div>
+        <div id="tab-part" class="tab-content"><div id="m-part"></div></div>
+      </div>
     </div>
+  </div>
 
-    <div id="view-disco" class="view-section">
-        <div class="discography-container">
-            <h2 class="section-title">Discografia</h2>
-            <div id="disco-grid" class="single-grid">
-                <div style="text-align:center; grid-column:1/-1; color:#aaa;">Carregando...</div>
-            </div>
-        </div>
+  <div id="disco-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal('disco-modal')"><i class="fas fa-times"></i></button>
+      <div class="disco-header-info">
+        <img id="dm-cover" class="disco-cover-large" src="">
+        <div id="dm-title" class="disco-title-large">Título</div>
+        <div id="dm-sub" class="disco-sub-large">Tipo</div>
+      </div>
+      <div id="dm-content" style="padding: 0 20px 40px 20px;"></div>
     </div>
+  </div>
 
-    <div id="view-members" class="view-section">
-        <div class="container">
-            <h2 class="section-title">Membros</h2>
-
-            <div class="filter-bar">
-                <button class="filter-btn active" onclick="setMemberFilter('gen', this)">Por Geração</button>
-                <button class="filter-btn" onclick="setMemberFilter('team', this)">Por Team</button>
-            </div>
-
-            <div id="scroll-buttons"></div>
-            <div id="members-container">
-                <div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="member-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal('member-modal')"><i class="fas fa-times"></i></button>
-            <div class="modal-header-bg"></div>
-            <div style="display:flex; justify-content:center;"><img id="m-cover" class="modal-profile-img" src=""></div>
-            <div class="modal-body">
-                <div class="modal-title" id="m-name">Nome</div>
-                <div class="modal-sub" id="m-team">Team</div>
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="tab('perfil', this)">Perfil</button>
-                    <button class="tab-btn" onclick="tab('galeria', this)">Galeria</button>
-                    <button class="tab-btn" onclick="tab('part', this)">Músicas</button>
-                </div>
-                <div id="tab-perfil" class="tab-content active">
-                    <p id="m-bio" style="line-height:1.7; color:#555; font-size:0.9rem; padding:0 10px;">...</p>
-                </div>
-                <div id="tab-galeria" class="tab-content">
-                    <div id="m-gallery" class="gallery-grid"></div>
-                </div>
-                <div id="tab-part" class="tab-content">
-                    <div id="m-part"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="disco-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal('disco-modal')"><i class="fas fa-times"></i></button>
-
-            <div class="disco-header-info">
-                <img id="dm-cover" class="disco-cover-large" src="">
-                <div id="dm-title" class="disco-title-large">Título</div>
-                <div id="dm-sub" class="disco-sub-large">Tipo</div>
-            </div>
-
-            <div id="dm-content" style="padding: 0 20px 40px 20px;"></div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('view-home', this)"><i class="fas fa-home"></i> Home</button>
-        <button class="nav-item" onclick="switchTab('view-disco', this)"><i class="fas fa-compact-disc"></i> Disco</button>
-        <button class="nav-item" onclick="switchTab('view-members', this)"><i class="fas fa-users"></i> Membros</button>
-    </div>
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('view-home', this)"><i class="fas fa-home"></i> Home</button>
+    <button class="nav-item" onclick="switchTab('view-disco', this)"><i class="fas fa-compact-disc"></i> Disco</button>
+    <button class="nav-item" onclick="switchTab('view-members', this)"><i class="fas fa-users"></i> Membros</button>
+  </div>
 
 <script>
-  const API_KEY = 'patzIKAjwQnDtoIme.1aca2da0458d3f76cb528a285652d695a5acd97dee0ed3af3ddcbbeff2daaac6';
-  const BASE_ID = 'appVh4GZeAWJ06uey';
-  const T_NEWS = 'Noticias';
-  const T_DISCO = 'Discografia';
-  const T_MEMBERS = 'tblaFURTBeUVGx6IW';
+  // === CONFIGURAÇÃO CORRETA ===
+  const SUPABASE_URL = "https://iooyygtaosshxygnhlco.supabase.co";
 
-  // Variável global para armazenar membros e o filtro atual
+  // ✅ ANON KEY (ok no front) — se RLS estiver ON, precisa de policy de SELECT
+  const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlvb3l5Z3Rhb3NzaHh5Z25obGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMDEyNTUsImV4cCI6MjA4NDU3NzI1NX0.gfcVtNgn3g1gnFVrtaIqzkWxajYiV_KbtycYsE9OZ0Y";
+
+  const { createClient } = supabase;
+  const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Tabelas (iguais ao seu “base”)
+  const T_NEWS = "Noticias";
+  const T_DISCO = "Discografia";
+  const T_MEMBERS = "Membros";
+
+  // (Opcional) Se um dia você quiser suportar Storage também:
+  // const STORAGE_BUCKET = "members";
+  // function publicUrlFromPath(path) {
+  //   const clean = String(path || "").replace(/^\/+/, "");
+  //   return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${clean}`;
+  // }
+
   let loadedMembers = [];
-  let currentFilter = 'gen'; // 'gen' ou 'team'
-
-  // ✅ Airtable fetch ALL (offset) — resolve sumiço de registros antigos
-  async function airtableFetchAll(table, params = "") {
-    let all = [];
-    let offset = null;
-
-    do {
-      const url =
-        `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(table)}` +
-        `?pageSize=100${params}` +
-        (offset ? `&offset=${encodeURIComponent(offset)}` : "");
-
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${API_KEY}` }
-      });
-
-      const data = await res.json();
-      if (data?.error) throw data.error;
-
-      all = all.concat(data.records || []);
-      offset = data.offset || null;
-    } while (offset);
-
-    return all;
-  }
+  let currentFilter = "gen";
 
   function switchTab(id, el) {
-    document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if (el) el.classList.add('active');
+    document.querySelectorAll(".view-section").forEach((s) => s.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    if (el) el.classList.add("active");
     window.scrollTo(0, 0);
   }
 
+  // ===============================
+  // ✅ IMAGENS POR LINK (URL)
+  // ===============================
+  // - Se vier URL (http/https), usa direto.
+  // - Se vier array (tipo Airtable antigo), pega a primeira.
+  // - Se vier objeto {url: ...} também funciona.
+function resolveImage(field) {
+    if (!field) return "";
+
+    // Airtable antigo: array de anexos
+    if (Array.isArray(field) && field.length > 0) field = field[0];
+
+    // Objeto { url: "..." }
+    if (typeof field === "object") {
+      if (field.url) return String(field.url).trim();
+      if (field.publicUrl) return String(field.publicUrl).trim();
+      field = field.path || "";
+    }
+
+    let s = String(field).trim();
+    if (!s) return "";
+
+    // ✅ CASO DO SEU ERRO:
+    // "arquivo.jpg (https://v5.airtableusercontent.com/....)"
+    // ou "https://site/arquivo%20(https://v5....)"
+    // Pega o link dentro do último parênteses
+    if (s.includes("(") && s.includes(")") && s.includes("http")) {
+      const lastOpen = s.lastIndexOf("(");
+      const lastClose = s.lastIndexOf(")");
+      if (lastOpen !== -1 && lastClose !== -1 && lastClose > lastOpen) {
+        const inside = s.slice(lastOpen + 1, lastClose).trim();
+        if (inside.startsWith("http://") || inside.startsWith("https://")) {
+          s = inside;
+        }
+      }
+    }
+       // Remove lixo comum: espaço, %20 no final, aspas
+    s = s.replace(/^"+|"+$/g, "").trim();
+    s = s.replace(/%20+$/g, "").trim();
+
+    // Se tiver mais de um http na string, fica só do primeiro http
+    const firstHttp = s.indexOf("http");
+    if (firstHttp > 0) s = s.slice(firstHttp).trim();
+
+    // Valida se virou URL mesmo
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+
+    return ""; // não é URL válida
+  }
+
+function getImgUrl(field) {
+    return resolveImage(field);
+  }
+  
+function getGalleryUrls(field) {
+    if (!field) return [];
+
+    if (Array.isArray(field)) return field.map(resolveImage).filter(Boolean);
+
+    // Se vier como JSON string "[...]" tenta parsear
+    if (typeof field === "string" && field.trim().startsWith("[")) {
+      try {
+        const arr = JSON.parse(field);
+        if (Array.isArray(arr)) return arr.map(resolveImage).filter(Boolean);
+      } catch (e) {}
+    }
+
+    const one = resolveImage(field);
+    return one ? [one] : [];
+  }
+
   async function init() {
+    console.log("Iniciando carregamento...");
     try {
-      // ✅ News (offset)
-      const news = await airtableFetchAll(
-        T_NEWS,
-        `&sort%5B0%5D%5Bfield%5D=Data&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=5`
-      );
-      renderNews(news.slice(0, 5));
+      // 1) Notícias
+      const { data: news, error: errNews } = await _supabase
+        .from(T_NEWS)
+        .select("*")
+        .order("Data", { ascending: false })
+        .limit(5);
 
-      // ✅ Disco (offset)
-      const discos = await airtableFetchAll(
-        T_DISCO,
-        `&sort%5B0%5D%5Bfield%5D=Data&sort%5B0%5D%5Bdirection%5D=desc`
-      );
-      renderDisco(discos);
+      if (errNews) {
+        console.error("ERRO NOTICIAS:", errNews);
+        document.getElementById("news-list").innerHTML =
+          '<p style="text-align:center;color:#999">Erro ao carregar notícias (veja o console).</p>';
+      } else {
+        renderNews(news || []);
+      }
 
-      // ✅ Members (offset)
-      const members = await airtableFetchAll(
-        T_MEMBERS,
-        `&sort%5B0%5D%5Bfield%5D=Geracao&sort%5B1%5D%5Bfield%5D=Nome`
-      );
+      // 2) Discografia
+      const { data: discos, error: errDisco } = await _supabase
+        .from(T_DISCO)
+        .select("*")
+        .order("Data", { ascending: false });
+
+      if (errDisco) {
+        console.error("ERRO DISCO:", errDisco);
+      }
+      renderDisco(discos || []);
+
+      // 3) Membros
+      const { data: members, error: errMemb } = await _supabase
+        .from(T_MEMBERS)
+        .select("*")
+        .order("Geracao", { ascending: true })
+        .order("Nome", { ascending: true });
+
+      if (errMemb) {
+        console.error("ERRO MEMBROS:", errMemb);
+      }
       loadedMembers = members || [];
       renderMembers();
     } catch (e) {
-      console.error(e);
+      console.error("ERRO GERAL:", e);
+      alert("Erro no script. Verifique o console (F12).");
     }
   }
 
   function renderNews(list) {
-    const c = document.getElementById('news-list');
-    c.innerHTML = '';
+    const c = document.getElementById("news-list");
+    c.innerHTML = "";
+
     if (!list || list.length === 0) {
       c.innerHTML = '<p style="text-align:center;color:#999">Sem notícias.</p>';
       return;
     }
-    list.forEach(r => {
-      const f = r.fields || {};
-      const d = f.Data ? f.Data.split('-') : ['', '', ''];
+
+    list.forEach((r) => {
+      const d = r.Data ? String(r.Data).split("-") : ["", "", ""];
       c.innerHTML += `
         <div class="news-item">
-          <div class="news-date"><span>${d[2] || ''}</span>${d[1] || ''}</div>
+          <div class="news-date"><span>${d[2] || ""}</span>${d[1] || ""}</div>
           <div class="news-content">
-            <span class="news-tag">${f.Categoria || 'News'}</span>
-            <h4>${f.Titulo || ''}</h4>
-            <div class="news-text">${f.Texto || ''}</div>
+            <span class="news-tag">${r.Categoria || "News"}</span>
+            <h4>${r.Titulo || ""}</h4>
+            <div class="news-text">${r.Texto || ""}</div>
           </div>
-        </div>
-      `;
+        </div>`;
     });
   }
 
   function renderDisco(list) {
-    const c = document.getElementById('disco-grid');
-    c.innerHTML = '';
+    const c = document.getElementById("disco-grid");
+    c.innerHTML = "";
 
     if (list && list.length > 0) {
-      const l = list[0].fields || {};
-      document.getElementById('hero-title').innerText = l.Titulo || '—';
-      document.getElementById('hero-sub').innerText = `${l.Tipo || ''}${l.Center ? ` • Center: ${l.Center}` : ''}`;
-      document.getElementById('hero-bg').src = l.Capa || '';
+      const l = list[0];
+      const capaUrl = getImgUrl(l.Capa);
+
+      document.getElementById("hero-title").innerText = l.Titulo || "—";
+      document.getElementById("hero-sub").innerText = `${l.Tipo || ""}${
+        l.Center ? ` • Center: ${l.Center}` : ""
+      }`;
+      document.getElementById("hero-bg").src = capaUrl || "";
     } else {
-      c.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999">Sem lançamentos.</p>';
+      c.innerHTML =
+        '<p style="grid-column:1/-1;text-align:center;color:#999">Sem lançamentos.</p>';
       return;
     }
 
-    list.forEach(r => {
-      const f = r.fields || {};
-      const safeData = encodeURIComponent(JSON.stringify({
-        title: f.Titulo,
-        type: f.Tipo,
-        cover: f.Capa,
-        content: f.Tracklist
-      }));
+    list.forEach((r) => {
+      const capaUrl = getImgUrl(r.Capa);
+
+      const safeData = encodeURIComponent(
+        JSON.stringify({
+          title: r.Titulo,
+          type: r.Tipo,
+          cover: capaUrl,
+          content: r.Tracklist,
+        })
+      ).replace(/'/g, "%27");
 
       c.innerHTML += `
         <div class="single-card" onclick="openDiscoModal('${safeData}')">
-          <div class="single-cover"><img src="${f.Capa || ''}" loading="lazy"></div>
-          <div class="single-info">
-            <div class="single-title-text">${f.Titulo || ''}</div>
-            <div class="single-type-text">${f.Tipo || ''}</div>
+          <div class="single-cover">
+            <img src="${capaUrl}" loading="lazy" onerror="this.src='https://placehold.co/600x600?text=Sem+Capa'">
           </div>
-        </div>
-      `;
+          <div class="single-info">
+            <div class="single-title-text">${r.Titulo || ""}</div>
+            <div class="single-type-text">${r.Tipo || ""}</div>
+          </div>
+        </div>`;
     });
   }
 
   function openDiscoModal(json) {
     const data = JSON.parse(decodeURIComponent(json));
-    document.getElementById('dm-title').innerText = data.title || '';
-    document.getElementById('dm-sub').innerText = data.type || '';
-    document.getElementById('dm-cover').src = data.cover || '';
 
-    const contentBox = document.getElementById('dm-content');
-    contentBox.innerHTML = data.content || '<p style="text-align:center;color:#999; margin-top:20px;">Sem detalhes.</p>';
+    document.getElementById("dm-title").innerText = data.title || "";
+    document.getElementById("dm-sub").innerText = data.type || "";
+    document.getElementById("dm-cover").src = data.cover || "";
 
-    // ✅ FALLBACK AUTOMÁTICO:
-    // Se single antigo tiver formação/tracklist mas não tiver as abas, cria as abas.
-    const hasTabs = contentBox.querySelector('.modal-nav') && contentBox.querySelector('.modal-section');
-    const hasFormationGroups = contentBox.querySelector('.formation-group') || contentBox.querySelector('.rows-wrap') || contentBox.querySelector('.member-card-static');
-    const hasTracklist = contentBox.querySelector('.tracklist');
+    const contentBox = document.getElementById("dm-content");
+
+    let htmlContent = data.content;
+    if (typeof htmlContent === "object") htmlContent = JSON.stringify(htmlContent);
+
+    contentBox.innerHTML =
+      htmlContent ||
+      '<p style="text-align:center;color:#999; margin-top:20px;">Sem detalhes.</p>';
+
+    const hasTabs = contentBox.querySelector(".modal-nav") && contentBox.querySelector(".modal-section");
+    const hasFormationGroups =
+      contentBox.querySelector(".formation-group") ||
+      contentBox.querySelector(".rows-wrap") ||
+      contentBox.querySelector(".member-card-static");
+    const hasTracklist = contentBox.querySelector(".tracklist");
 
     if (!hasTabs && (hasFormationGroups || hasTracklist)) {
       const original = contentBox.innerHTML;
-      const temp = document.createElement('div');
+      const temp = document.createElement("div");
       temp.innerHTML = original;
 
-      // tenta detectar tracklist e formação separadamente
-      const tracklistEl = temp.querySelector('.tracklist');
-      let tracklistHTML = '';
-      let formationHTML = '';
+      const tracklistEl = temp.querySelector(".tracklist");
+      let tracklistHTML = "";
+      let formationHTML = "";
 
       if (tracklistEl) {
         tracklistHTML = `<div class="modal-section active" data-section="tracklist">${tracklistEl.outerHTML}</div>`;
-        tracklistEl.remove(); // remove tracklist do temp para sobrar a formação
+        tracklistEl.remove();
         formationHTML = `<div class="modal-section" data-section="formacao">${temp.innerHTML}</div>`;
       } else {
-        tracklistHTML = `<div class="modal-section active" data-section="tracklist"><p style="text-align:center;color:#999;margin:20px 0;">Sem tracklist.</p></div>`;
+        tracklistHTML =
+          `<div class="modal-section active" data-section="tracklist"><p style="text-align:center;color:#999;margin:20px 0;">Sem tracklist.</p></div>`;
         formationHTML = `<div class="modal-section" data-section="formacao">${original}</div>`;
       }
 
@@ -1113,223 +458,247 @@
           <button class="modal-nav-btn" data-section="formacao">Formação</button>
         </div>
         ${tracklistHTML}
-        ${formationHTML}
-      `;
+        ${formationHTML}`;
     }
 
-    // ✅ Ativa a lógica de abas (Tracklist / Formação)
-    const navBtns = contentBox.querySelectorAll('.modal-nav-btn');
-    navBtns.forEach(btn => {
+    const navBtns = contentBox.querySelectorAll(".modal-nav-btn");
+    navBtns.forEach((btn) => {
       btn.onclick = function () {
-        navBtns.forEach(b => b.classList.remove('active'));
-        contentBox.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
+        navBtns.forEach((b) => b.classList.remove("active"));
+        contentBox.querySelectorAll(".modal-section").forEach((s) => s.classList.remove("active"));
 
-        this.classList.add('active');
-        const target = this.getAttribute('data-section');
+        this.classList.add("active");
+        const target = this.getAttribute("data-section");
         const section = contentBox.querySelector(`.modal-section[data-section="${target}"]`);
-        if (section) section.classList.add('active');
+        if (section) section.classList.add("active");
       };
     });
 
-    document.getElementById('disco-modal').classList.add('active');
+    document.getElementById("disco-modal").classList.add("active");
   }
 
   // === FILTROS DE MEMBROS ===
   function setMemberFilter(type, btn) {
     currentFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+    document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
     renderMembers();
   }
 
   function renderMembers() {
-    const container = document.getElementById('members-container');
-    const buttons = document.getElementById('scroll-buttons');
-    container.innerHTML = '';
-    buttons.innerHTML = '';
+    const container = document.getElementById("members-container");
+    const buttons = document.getElementById("scroll-buttons");
+    container.innerHTML = "";
+    buttons.innerHTML = "";
 
     if (!loadedMembers || loadedMembers.length === 0) {
       container.innerHTML = '<p style="text-align:center;color:#999">Vazio.</p>';
       return;
     }
 
-    const EX_STATUSES = new Set(['Graduada', 'Demitida', 'Expulsa']);
+    const EX_STATUSES = new Set(["Graduada", "Demitida", "Expulsa"]);
     const groups = {};
     const exMembers = [];
 
-    loadedMembers.forEach(r => {
-      const f = r.fields || {};
-      const status = (f.Status || '').trim();
+    loadedMembers.forEach((r) => {
+      const status = (r.Status || "").trim();
       const memberObj = {
-        Nome: f.Nome || '',
-        Time: f.Time || 'Sem Time',
-        Geracao: f.Geracao || 'Outros',
+        Nome: r.Nome || "",
+        Time: r.Time || "Sem Time",
+        Geracao: r.Geracao || "Outros",
         Status: status,
-        Foto: f.Foto || null,
-        Perfil: f.Perfil || 'Sem biografia.',
-        Galeria: f.Galeria || [],
-        Participacoes: f.Participacoes || ''
+        Foto: r.Foto,
+        Perfil: r.Perfil || "Sem biografia.",
+        Galeria: r.Galeria,
+        Participacoes: r.Participacoes || "",
       };
 
-      if (EX_STATUSES.has(status)) {
-        exMembers.push(memberObj);
-      } else {
-        const key = (currentFilter === 'team') ? memberObj.Time : memberObj.Geracao;
+      if (EX_STATUSES.has(status)) exMembers.push(memberObj);
+      else {
+        const key = currentFilter === "team" ? memberObj.Time : memberObj.Geracao;
         if (!groups[key]) groups[key] = [];
         groups[key].push(memberObj);
       }
     });
 
     function makeCard(m) {
-      const photoUrl = (m.Foto && m.Foto[0] && m.Foto[0].url) ? m.Foto[0].url : 'https://placehold.co/300';
-      const payload = encodeURIComponent(JSON.stringify({
-        name: m.Nome,
-        team: m.Time,
-        gen: m.Geracao,
-        photo: photoUrl,
-        bio: m.Perfil,
-        gallery: m.Galeria ? m.Galeria.map(g => g.url) : [],
-        part: m.Participacoes,
-        status: m.Status
-      }));
+      const photoUrl = getImgUrl(m.Foto) || "https://placehold.co/600x600?text=Sem+Foto";
+      const rawGallery = getGalleryUrls(m.Galeria);
+
+      const payload = encodeURIComponent(
+        JSON.stringify({
+          name: m.Nome,
+          team: m.Time,
+          gen: m.Geracao,
+          photo: photoUrl,
+          bio: m.Perfil,
+          gallery: rawGallery,
+          part: m.Participacoes,
+          status: m.Status,
+        })
+      ).replace(/'/g, "%27");
+
       return `
         <div class="member-card" onclick="openMember('${payload}')">
-          <div class="member-photo-container"><img src="${photoUrl}" loading="lazy"></div>
+          <div class="member-photo-container">
+            <img src="${photoUrl}" loading="lazy" onerror="this.src='https://placehold.co/600x600?text=Sem+Foto'">
+          </div>
           <div class="member-info-box">
             <div class="member-name-text">${m.Nome}</div>
             <div class="member-team-text">${m.Time}</div>
           </div>
-        </div>
-      `;
+        </div>`;
     }
 
     let sortedKeys = Object.keys(groups).sort();
-    if (currentFilter === 'team') {
-      const order = ['Team C', 'Team T', 'Team L', 'Team Kenkyuusei'];
+    if (currentFilter === "team") {
+      const order = ["Team C", "Team T", "Team L", "Team Kenkyuusei"];
       sortedKeys = sortedKeys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
     }
 
     sortedKeys.forEach((key, idx) => {
       const btnId = `group-${idx}`;
       buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">${key}</button>`;
-      let html = '';
-      groups[key].forEach(m => html += makeCard(m));
-      container.innerHTML += `<div id="${btnId}" class="generation-group"><h3 class="generation-title">${key}</h3><div class="member-grid-layout">${html}</div></div>`;
+
+      let html = "";
+      groups[key].forEach((m) => (html += makeCard(m)));
+
+      container.innerHTML += `<div id="${btnId}" class="generation-group">
+        <h3 class="generation-title">${key}</h3>
+        <div class="member-grid-layout">${html}</div>
+      </div>`;
     });
 
     if (exMembers.length) {
-      const exId = 'gen-ex';
+      const exId = "gen-ex";
       buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${exId}').scrollIntoView({behavior:'smooth', block:'start'})">Ex-membros</button>`;
-      let exHtml = '';
-      exMembers.sort((a, b) => a.Nome.localeCompare(b.Nome)).forEach(m => exHtml += makeCard(m));
-      container.innerHTML += `<div id="${exId}" class="generation-group"><h3 class="generation-title">Ex-membros</h3><div class="member-grid-layout">${exHtml}</div></div>`;
+
+      let exHtml = "";
+      exMembers
+        .sort((a, b) => a.Nome.localeCompare(b.Nome))
+        .forEach((m) => (exHtml += makeCard(m)));
+
+      container.innerHTML += `<div id="${exId}" class="generation-group">
+        <h3 class="generation-title">Ex-membros</h3>
+        <div class="member-grid-layout">${exHtml}</div>
+      </div>`;
     }
 
-    const btns = document.querySelectorAll('.button-gen');
-    if (btns.length > 0) btns[0].classList.add('active');
-    btns.forEach(b => b.onclick = function () {
-      btns.forEach(x => x.classList.remove('active'));
-      this.classList.add('active');
-      const targetId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-      document.getElementById(targetId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const btns = document.querySelectorAll(".button-gen");
+    if (btns.length > 0) btns[0].classList.add("active");
+
+    btns.forEach((b) => {
+      b.onclick = function () {
+        btns.forEach((x) => x.classList.remove("active"));
+        this.classList.add("active");
+        const targetId = this.getAttribute("onclick").match(/'([^']+)'/)[1];
+        document.getElementById(targetId).scrollIntoView({ behavior: "smooth", block: "start" });
+      };
     });
   }
 
   function openMember(json) {
     const data = JSON.parse(decodeURIComponent(json));
-    document.getElementById('m-cover').src = data.photo || '';
-    document.getElementById('m-name').innerText = data.name || '';
-    let extra = data.status === 'Graduada' ? ' • Graduada' : '';
-    document.getElementById('m-team').innerText = `${data.team || ''} • ${data.gen || ''}${extra}`;
-    document.getElementById('m-bio').innerText = data.bio || 'Sem biografia.';
 
-    const gal = document.getElementById('m-gallery');
-    gal.innerHTML = '';
+    document.getElementById("m-cover").src = data.photo || "";
+    document.getElementById("m-name").innerText = data.name || "";
+
+    const extra = data.status === "Graduada" ? " • Graduada" : "";
+    document.getElementById("m-team").innerText = `${data.team || ""} • ${data.gen || ""}${extra}`;
+    document.getElementById("m-bio").innerText = data.bio || "Sem biografia.";
+
+    const gal = document.getElementById("m-gallery");
+    gal.innerHTML = "";
+
     if (data.gallery && data.gallery.length) {
-      data.gallery.forEach(url => gal.innerHTML += `<img src="${url}" loading="lazy">`);
+      data.gallery.forEach((url) => {
+        const u = resolveImage(url);
+        gal.innerHTML += `<img src="${u}" loading="lazy" onerror="this.style.display='none'">`;
+      });
     } else {
       gal.innerHTML = '<p style="grid-column:1/-1;color:#999;text-align:center;">Sem fotos.</p>';
     }
 
-    const partContainer = document.getElementById('m-part');
-    partContainer.innerHTML = '';
+    const partContainer = document.getElementById("m-part");
+    partContainer.innerHTML = "";
+
     try {
       if (data.part) {
-        const participations = JSON.parse(data.part);
+        let participations = data.part;
+        if (typeof participations === "string") participations = JSON.parse(participations);
         if (!Array.isArray(participations) || participations.length === 0) throw "Vazio";
 
-        participations.forEach(p => {
+        participations.forEach((p) => {
           const tracks = Array.isArray(p.tracks) ? p.tracks : [p.tracks];
-          let tracksHtml = '';
+          let tracksHtml = "";
 
           const LABEL_TEXT = {
             "a-side": "A-side",
             "b-side": "B-side",
-            "undergirls": "Undergirls",
-            "unit": "Unit",
-            "solo": "Solo",
-            "center": "Center",
+            undergirls: "Undergirls",
+            unit: "Unit",
+            solo: "Solo",
+            center: "Center",
             "w-center": "W-Center",
-            // compat com labels antigas "A-side"
             "A-side": "A-side",
-            "B-side": "B-side"
+            "B-side": "B-side",
           };
 
-          tracks.forEach(t => {
+          tracks.forEach((t) => {
             const labels = Array.isArray(t.labels) ? t.labels : [];
-            const labelsHtml = labels.map(l => {
-              const raw = String(l);
-              const k = raw.toLowerCase();
-              return `<span class="label ${k}">${LABEL_TEXT[k] || LABEL_TEXT[raw] || raw}</span>`;
-            }).join('');
+            const labelsHtml = labels
+              .map((l) => {
+                const raw = String(l);
+                const k = raw.toLowerCase();
+                return `<span class="label ${k}">${LABEL_TEXT[k] || LABEL_TEXT[raw] || raw}</span>`;
+              })
+              .join("");
 
-            const unitHtml = t.unitName ? `<span class="label unit">${t.unitName}</span>` : '';
+            const unitHtml = t.unitName ? `<span class="label unit">${t.unitName}</span>` : "";
 
-            tracksHtml += `
-              <li>
-                <span class="song-name">${t.title || 'Música'}</span>
-                <div class="song-badges">${unitHtml}${labelsHtml}</div>
-              </li>
-            `;
+            tracksHtml += `<li>
+              <span class="song-name">${t.title || "Música"}</span>
+              <div class="song-badges">${unitHtml}${labelsHtml}</div>
+            </li>`;
           });
 
           partContainer.innerHTML += `
             <div class="part-card">
-              <div class="part-header">${p.single || 'Single'}</div>
+              <div class="part-header">${p.single || "Single"}</div>
               <ul class="part-list">${tracksHtml}</ul>
-            </div>
-          `;
+            </div>`;
         });
       } else {
         throw "Vazio";
       }
     } catch (e) {
-      partContainer.innerHTML = '<p style="color:#999;text-align:center;margin-top:20px;">Nenhuma participação encontrada.</p>';
+      partContainer.innerHTML =
+        '<p style="color:#999;text-align:center;margin-top:20px;">Nenhuma participação encontrada.</p>';
     }
 
-    tab('perfil', document.querySelector('.tab-btn'));
-    document.getElementById('member-modal').classList.add('active');
+    tab("perfil", document.querySelector(".tab-btn"));
+    document.getElementById("member-modal").classList.add("active");
   }
 
   function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
+    document.getElementById(id).classList.remove("active");
   }
 
   function tab(t, el) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-' + t).classList.add('active');
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+    el.classList.add("active");
+    document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+    document.getElementById("tab-" + t).classList.add("active");
   }
 
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-overlay')) {
-      e.target.classList.remove('active');
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-overlay")) {
+      e.target.classList.remove("active");
     }
   });
 
+  // Inicia o app
   init();
 </script>
 </body>
-
 </html>
