@@ -1010,7 +1010,14 @@
         const data = JSON.parse(decodeURIComponent(json));
         document.getElementById("m-cover").src = data.photo || "";
         document.getElementById("m-name").innerText = data.name || "";
-        document.getElementById("m-team").innerText = `${data.team || ""} • ${data.gen || ""}${data.status === "Graduada" ? " • Graduada" : ""}`;
+const st = String(data.status || "").trim().toLowerCase();
+let statusTag = "";
+if (st === "graduada") statusTag = " • Graduada";
+else if (st === "demitida") statusTag = " • Demitida";
+else if (st === "expulsa") statusTag = " • Expulsa";
+
+document.getElementById("m-team").innerText =
+  `${data.team || ""} • ${data.gen || ""}${statusTag}`;
         document.getElementById("m-bio").innerText = data.bio || "Sem biografia.";
         
         const gal = document.getElementById("m-gallery"); gal.innerHTML = "";
