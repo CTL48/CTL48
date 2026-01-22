@@ -309,9 +309,15 @@
         <select id="ch-sort" onchange="renderCharts()" style="padding:12px;border:1px solid #eee;border-radius:12px;">
           <option value="songs">Mais músicas</option>
           <option value="centers">Mais centers</option>
+          <option value="aside_centers">Mais A-side Centers</option>
           <option value="name">Nome</option>
         </select>
       </div>
+
+      <label style="display:flex;gap:10px;align-items:center;font-weight:900;color:#555;margin-bottom:12px;">
+        <input id="ch-only-aside-center" type="checkbox" onchange="renderCharts()">
+        Mostrar apenas quem tem A-side Center
+      </label>
   
       <div id="charts-list">
         <div style="text-align:center; padding:20px; color:#aaa;">Carregando...</div>
@@ -540,7 +546,7 @@
       return one ? [one] : [];
     }
 
-    // --- CHARTS LOGIC (New) ---
+    // --- CHARTS LOGIC ---
     function safeJson(v){
       if(!v) return null;
       if(typeof v === "object") return v;
@@ -573,6 +579,18 @@
       return c;
     }
 
+    function countAsideCentersFromTracks(tracks){
+      let c = 0;
+      (tracks||[]).forEach(t => {
+        const labels = Array.isArray(t.labels) ? t.labels : [];
+        const norm = labels.map(l => String(l||"").toLowerCase().trim().replace(/\s+/g,"-"));
+        const hasCenter = norm.includes("center");
+        const hasAside = norm.includes("a-side") || norm.includes("aside");
+        if (hasCenter && hasAside) c++;
+      });
+      return c;
+    }
+
     function buildMemberStats(){
       const EX = new Set(["graduada","demitida","expulsa"]);
       const list = (loadedMembers || []).filter(m => !EX.has((m.Status||"").trim().toLowerCase()));
@@ -588,7 +606,8 @@
           gen: m.Geracao || "",
           photo: getImgUrl(m.Foto) || "https://placehold.co/120x120?text=?",
           songs: tracks.length,               // total de músicas listadas
-          centers: countCentersFromTracks(tracks) // quantos tracks com label "center"
+          centers: countCentersFromTracks(tracks), // quantos tracks com label "center"
+          asideCenters: countAsideCentersFromTracks(tracks) // quantos A-side centers
         };
       });
     }
@@ -599,11 +618,14 @@
 
       const q = (document.getElementById("ch-q")?.value || "").toLowerCase().trim();
       const sort = (document.getElementById("ch-sort")?.value || "songs").trim();
+      const onlyAsideCenter = !!document.getElementById("ch-only-aside-center")?.checked;
 
       let stats = buildMemberStats();
       if(q) stats = stats.filter(x => x.name.toLowerCase().includes(q));
+      if(onlyAsideCenter) stats = stats.filter(x => x.asideCenters > 0);
 
       if(sort === "centers") stats.sort((a,b) => (b.centers - a.centers) || (b.songs - a.songs) || a.name.localeCompare(b.name,"pt-BR"));
+      else if(sort === "aside_centers") stats.sort((a,b) => (b.asideCenters - a.asideCenters) || (b.centers - a.centers) || (b.songs - a.songs) || a.name.localeCompare(b.name,"pt-BR"));
       else if(sort === "name") stats.sort((a,b) => a.name.localeCompare(b.name,"pt-BR"));
       else stats.sort((a,b) => (b.songs - a.songs) || (b.centers - a.centers) || a.name.localeCompare(b.name,"pt-BR"));
 
@@ -622,6 +644,7 @@
           <div class="chart-badges">
             <span class="chart-pill"><i class="fas fa-microphone"></i> ${s.songs} músicas</span>
             <span class="chart-pill"><i class="fas fa-star"></i> ${s.centers} centers</span>
+            <span class="chart-pill" style="background:#fff0f5;color:#e91e63"><i class="fas fa-crown"></i> ${s.asideCenters} A-side</span>
           </div>
         </div>
       `).join("");
