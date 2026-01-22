@@ -309,14 +309,14 @@
         <select id="ch-sort" onchange="renderCharts()" style="padding:12px;border:1px solid #eee;border-radius:12px;">
           <option value="songs">Mais músicas</option>
           <option value="centers">Mais centers</option>
-          <option value="aside_centers">Mais A-side Centers</option>
+          <option value="aside_centers">Mais A-side</option>
           <option value="name">Nome</option>
         </select>
       </div>
 
       <label style="display:flex;gap:10px;align-items:center;font-weight:900;color:#555;margin-bottom:12px;">
         <input id="ch-only-aside-center" type="checkbox" onchange="renderCharts()">
-        Mostrar apenas quem tem A-side Center
+        Mostrar apenas quem tem A-side
       </label>
   
       <div id="charts-list">
@@ -579,14 +579,14 @@
       return c;
     }
 
-    function countAsideCentersFromTracks(tracks){
+    function countAsideFromTracks(tracks){
       let c = 0;
       (tracks||[]).forEach(t => {
         const labels = Array.isArray(t.labels) ? t.labels : [];
         const norm = labels.map(l => String(l||"").toLowerCase().trim().replace(/\s+/g,"-"));
-        const hasCenter = norm.includes("center");
-        const hasAside = norm.includes("a-side") || norm.includes("aside");
-        if (hasCenter && hasAside) c++;
+        
+        const hasAside = norm.includes("a-side") || norm.includes("aside") || norm.includes("a-side");
+        if(hasAside) c++;
       });
       return c;
     }
@@ -607,7 +607,7 @@
           photo: getImgUrl(m.Foto) || "https://placehold.co/120x120?text=?",
           songs: tracks.length,               // total de músicas listadas
           centers: countCentersFromTracks(tracks), // quantos tracks com label "center"
-          asideCenters: countAsideCentersFromTracks(tracks) // quantos A-side centers
+          asideSongs: countAsideFromTracks(tracks) // quantos A-side
         };
       });
     }
@@ -618,14 +618,14 @@
 
       const q = (document.getElementById("ch-q")?.value || "").toLowerCase().trim();
       const sort = (document.getElementById("ch-sort")?.value || "songs").trim();
-      const onlyAsideCenter = !!document.getElementById("ch-only-aside-center")?.checked;
+      const onlyAside = !!document.getElementById("ch-only-aside-center")?.checked;
 
       let stats = buildMemberStats();
       if(q) stats = stats.filter(x => x.name.toLowerCase().includes(q));
-      if(onlyAsideCenter) stats = stats.filter(x => x.asideCenters > 0);
+      if(onlyAside) stats = stats.filter(x => x.asideSongs > 0);
 
       if(sort === "centers") stats.sort((a,b) => (b.centers - a.centers) || (b.songs - a.songs) || a.name.localeCompare(b.name,"pt-BR"));
-      else if(sort === "aside_centers") stats.sort((a,b) => (b.asideCenters - a.asideCenters) || (b.centers - a.centers) || (b.songs - a.songs) || a.name.localeCompare(b.name,"pt-BR"));
+      else if(sort === "aside_centers") stats.sort((a,b) => (b.asideSongs - a.asideSongs) || (b.songs - a.songs) || a.name.localeCompare(b.name,"pt-BR"));
       else if(sort === "name") stats.sort((a,b) => a.name.localeCompare(b.name,"pt-BR"));
       else stats.sort((a,b) => (b.songs - a.songs) || (b.centers - a.centers) || a.name.localeCompare(b.name,"pt-BR"));
 
@@ -644,7 +644,7 @@
           <div class="chart-badges">
             <span class="chart-pill"><i class="fas fa-microphone"></i> ${s.songs} músicas</span>
             <span class="chart-pill"><i class="fas fa-star"></i> ${s.centers} centers</span>
-            <span class="chart-pill" style="background:#fff0f5;color:#e91e63"><i class="fas fa-crown"></i> ${s.asideCenters} A-side</span>
+            <span class="chart-pill" style="background:#fff0f5;color:#e91e63"><i class="fas fa-star"></i> ${s.asideSongs} A-side</span>
           </div>
         </div>
       `).join("");
@@ -1010,14 +1010,7 @@
         const data = JSON.parse(decodeURIComponent(json));
         document.getElementById("m-cover").src = data.photo || "";
         document.getElementById("m-name").innerText = data.name || "";
-const st = String(data.status || "").trim().toLowerCase();
-let statusTag = "";
-if (st === "graduada") statusTag = " • Graduada";
-else if (st === "demitida") statusTag = " • Demitida";
-else if (st === "expulsa") statusTag = " • Expulsa";
-
-document.getElementById("m-team").innerText =
-  `${data.team || ""} • ${data.gen || ""}${statusTag}`;
+        document.getElementById("m-team").innerText = `${data.team || ""} • ${data.gen || ""}${data.status === "Graduada" ? " • Graduada" : ""}`;
         document.getElementById("m-bio").innerText = data.bio || "Sem biografia.";
         
         const gal = document.getElementById("m-gallery"); gal.innerHTML = "";
