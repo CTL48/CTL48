@@ -9,9 +9,10 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
   <style>
-    /* (Seu CSS original mantido intacto para economizar espaço) */
+    /* (CSS Global) */
     :root { --primary: #e91e63; --primary-soft: #fce4ec; --dark: #333333; --text-gray: #666666; --bg: #fafafa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg); color: var(--dark); font-family: 'Roboto', sans-serif; padding-bottom: 90px; overflow-x: hidden; }
@@ -112,6 +113,50 @@
     .nav-item.active { color: var(--primary); }
     .nav-item i { font-size: 1.5rem; margin-bottom: 4px; transition: 0.2s; }
     .nav-item.active i { transform: translateY(-3px); }
+    .btn-main { width: 100%; padding: 14px; border: none; border-radius: 999px; background: var(--primary); color: #fff; font-weight: 900; cursor: pointer; }
+
+    /* SENBATSU STYLES */
+    .selection-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.8); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; }
+    .selection-box { background: #fff; width: 92%; max-width: 900px; max-height: 85vh; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+    .selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; overflow-y: auto; padding: 10px; border-radius: 14px; background: #fafafa; border: 1px solid #eee; }
+    .select-item { text-align: center; cursor: pointer; padding: 8px 6px; border-radius: 12px; transition: .15s; user-select: none; }
+    .select-item:hover { background: #fff0f5; }
+    .select-item img { width: 66px; height: 66px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; background: #fff; }
+    .select-item div { font-size: .72rem; font-weight: 900; margin-top: 6px; line-height: 1.15; color: #333; }
+    #sen-modal.modal-overlay { align-items: flex-end; }
+    #sen-modal .modal-content { height: 92vh; }
+    .sen-stage { padding: 18px 18px 110px 18px; }
+    .sen-print-area { background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 8px 20px rgba(0,0,0,.06); border: 1px solid #f3f3f3; }
+    .sen-title { text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 900; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; font-size: .95rem; margin-bottom: 4px; }
+    .sen-subtitle { text-align: center; font-weight: 800; color: #444; font-size: .9rem; margin-bottom: 12px; }
+    
+    /* CORREÇÃO: Frente embaixo */
+    .sen-rows-wrap { display:flex; flex-direction: column-reverse; gap:14px; }
+    
+    .sen-row { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+    .sen-slot { width: 76px; text-align: center; cursor: pointer; position: relative; }
+    .sen-circle { width: 66px; height: 66px; border-radius: 50%; background: #fff; border: 2px solid #eaeaea; display:flex; align-items:center; justify-content:center; overflow:hidden; margin: 0 auto; }
+    .sen-slot.is-center .sen-circle{ border-color: var(--primary); box-shadow: 0 0 0 4px rgba(233,30,99,.18); transform: scale(1.04); }
+    .sen-badge{ position:absolute; bottom: 20px; right: 5px; width: 20px; height: 20px; border-radius: 50%; background: #333; color:#fff; font-size:.65rem; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
+    .sen-slot.is-center .sen-badge{ background: var(--primary); }
+    .sen-name{ font-size: .68rem; font-weight: 900; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color:#333; }
+
+    /* === MOBILE OPTIMIZATION (Novas Regras) === */
+    @media (max-width: 600px) {
+        .sen-slot { width: 52px; }
+        .sen-circle { width: 44px; height: 44px; border-width: 1px; }
+        .sen-badge { 
+            width: 16px; height: 16px; 
+            font-size: 0.55rem; 
+            bottom: 16px; right: 0;
+            border-width: 1px;
+        }
+        .sen-name { font-size: 0.55rem; margin-top: 3px; }
+        .sen-row { gap: 4px; }
+        .sen-rows-wrap { gap: 10px; }
+        .sen-stage { padding: 10px 5px 100px 5px; }
+        .sen-print-area { padding: 10px 6px; }
+    }
   </style>
 </head>
 
@@ -153,6 +198,32 @@
     </div>
   </div>
 
+  <div id="view-senbatsu" class="view-section">
+    <div class="container">
+      <h2 class="section-title">Senbatsu Maker</h2>
+      <div style="background:#fff;border-radius:16px;padding:15px;box-shadow:0 4px 15px rgba(0,0,0,.03);">
+        <label style="font-weight:900;font-size:.75rem;color:#555;text-transform:uppercase;">Nome do Single</label>
+        <input id="s-single" placeholder="Ex: 10th Single" style="width:100%;padding:12px;border:1px solid #eee;border-radius:12px;margin:8px 0 12px 0;">
+        <label style="font-weight:900;font-size:.75rem;color:#555;text-transform:uppercase;">Nome da Música</label>
+        <input id="s-song" placeholder="Ex: A-side Title" style="width:100%;padding:12px;border:1px solid #eee;border-radius:12px;margin:8px 0 12px 0;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="font-weight:900;font-size:.75rem;color:#555;text-transform:uppercase;">Fileiras</label>
+            <select id="s-rowcount" onchange="senRenderRowInputs()" style="width:100%;padding:12px;border:1px solid #eee;border-radius:12px;margin-top:8px;">
+              <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-weight:900;font-size:.75rem;color:#555;text-transform:uppercase;">Centers</label>
+            <input id="s-centers" type="number" value="1" min="0" style="width:100%;padding:12px;border:1px solid #eee;border-radius:12px;margin-top:8px;">
+          </div>
+        </div>
+        <div id="s-row-inputs" style="margin-top:12px;"></div>
+        <button onclick="senStart()" style="margin-top:14px;width:100%;padding:14px;border:none;border-radius:999px;background:var(--primary);color:#fff;font-weight:900;">Montar Formação</button>
+      </div>
+    </div>
+  </div>
+
   <div id="member-modal" class="modal-overlay">
     <div class="modal-content">
       <button class="modal-close-btn" onclick="closeModal('member-modal')"><i class="fas fa-times"></i></button>
@@ -185,520 +256,441 @@
     </div>
   </div>
 
+  <div id="sen-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="senClose()"><i class="fas fa-times"></i></button>
+      <div class="modal-header-bg"></div>
+      <div class="sen-stage">
+        <div class="sen-print-area" id="sen-print">
+          <div class="sen-title" id="sen-print-single">(SINGLE)</div>
+          <div class="sen-subtitle" id="sen-print-song">(MÚSICA)</div>
+          <div class="sen-rows-wrap" id="sen-rows"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px;">
+          <button class="modal-nav-btn" style="flex:1" onclick="senClear()">Limpar</button>
+          <button class="modal-nav-btn" style="flex:1" onclick="senPrint()">Print</button>
+        </div>
+        <p style="text-align:center;color:#999;font-weight:700;margin-top:10px;font-size:.85rem;">Toque numa bolinha para escolher um membro.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="sen-pick" class="selection-modal">
+    <div class="selection-box">
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
+        <h3 style="margin:0;">Escolha</h3><button onclick="senClosePicker()" style="border:none;background:none;font-size:1.5rem;">✕</button>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <select id="sen-filter-team" onchange="senRenderPicker()" style="flex:1;"><option value="">Times</option><option>Team C</option><option>Team T</option><option>Team L</option><option>Team Kenkyuusei</option></select>
+        <select id="sen-filter-gen" onchange="senRenderPicker()" style="flex:1;"><option value="">Gens</option><option value="1">1ª</option><option value="2">2ª</option><option value="3">3ª</option><option value="4">4ª</option><option value="5">5ª</option></select>
+      </div>
+      <input id="sen-filter-q" placeholder="Buscar..." oninput="senRenderPicker()" style="width:100%; padding:12px; border:1px solid #eee; border-radius:12px; margin-bottom:12px;">
+      <div class="selection-grid" id="sen-pick-grid"></div>
+      <button class="btn-main" style="background:#f44336; margin-top:12px;" onclick="senPickEmpty()">Remover (Vazio)</button>
+    </div>
+  </div>
+
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('view-home', this)"><i class="fas fa-home"></i> Home</button>
     <button class="nav-item" onclick="switchTab('view-disco', this)"><i class="fas fa-compact-disc"></i> Disco</button>
     <button class="nav-item" onclick="switchTab('view-members', this)"><i class="fas fa-users"></i> Membros</button>
+    <button class="nav-item" onclick="switchTab('view-senbatsu', this)"><i class="fas fa-star"></i> Senbatsu</button>
   </div>
 
-<script>
-  // === CONFIGURAÇÃO CORRETA ===
-  const SUPABASE_URL = "https://iooyygtaosshxygnhlco.supabase.co";
+  <script>
+    const SUPABASE_URL = "https://iooyygtaosshxygnhlco.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlvb3l5Z3Rhb3NzaHh5Z25obGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMDEyNTUsImV4cCI6MjA4NDU3NzI1NX0.gfcVtNgn3g1gnFVrtaIqzkWxajYiV_KbtycYsE9OZ0Y";
 
-  // ✅ ANON KEY (ok no front) — se RLS estiver ON, precisa de policy de SELECT
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlvb3l5Z3Rhb3NzaHh5Z25obGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMDEyNTUsImV4cCI6MjA4NDU3NzI1NX0.gfcVtNgn3g1gnFVrtaIqzkWxajYiV_KbtycYsE9OZ0Y";
+    if (!window.supabase) { alert("Supabase não carregou."); throw new Error("Supabase CDN failed."); }
+    const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const { createClient } = supabase;
-  const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const T_NEWS = "Noticias";
+    const T_DISCO = "Discografia";
+    const T_MEMBERS = "Membros";
 
-  // Tabelas (iguais ao seu “base”)
-  const T_NEWS = "Noticias";
-  const T_DISCO = "Discografia";
-  const T_MEMBERS = "Membros";
+    let loadedMembers = [];
+    let currentFilter = "gen";
 
-  // (Opcional) Se um dia você quiser suportar Storage também:
-  // const STORAGE_BUCKET = "members";
-  // function publicUrlFromPath(path) {
-  //   const clean = String(path || "").replace(/^\/+/, "");
-  //   return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${clean}`;
-  // }
-
-  let loadedMembers = [];
-  let currentFilter = "gen";
-
-  function switchTab(id, el) {
-    document.querySelectorAll(".view-section").forEach((s) => s.classList.remove("active"));
-    document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-    if (el) el.classList.add("active");
-    window.scrollTo(0, 0);
-  }
-
-  // ===============================
-  // ✅ IMAGENS POR LINK (URL)
-  // ===============================
-  // - Se vier URL (http/https), usa direto.
-  // - Se vier array (tipo Airtable antigo), pega a primeira.
-  // - Se vier objeto {url: ...} também funciona.
-function resolveImage(field) {
-    if (!field) return "";
-
-    // Airtable antigo: array de anexos
-    if (Array.isArray(field) && field.length > 0) field = field[0];
-
-    // Objeto { url: "..." }
-    if (typeof field === "object") {
-      if (field.url) return String(field.url).trim();
-      if (field.publicUrl) return String(field.publicUrl).trim();
-      field = field.path || "";
+    function switchTab(id, el) {
+      document.querySelectorAll(".view-section").forEach((s) => s.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      if (el) el.classList.add("active");
+      window.scrollTo(0, 0);
     }
 
-    let s = String(field).trim();
-    if (!s) return "";
-
-    // ✅ CASO DO SEU ERRO:
-    // "arquivo.jpg (https://v5.airtableusercontent.com/....)"
-    // ou "https://site/arquivo%20(https://v5....)"
-    // Pega o link dentro do último parênteses
-    if (s.includes("(") && s.includes(")") && s.includes("http")) {
-      const lastOpen = s.lastIndexOf("(");
-      const lastClose = s.lastIndexOf(")");
-      if (lastOpen !== -1 && lastClose !== -1 && lastClose > lastOpen) {
-        const inside = s.slice(lastOpen + 1, lastClose).trim();
-        if (inside.startsWith("http://") || inside.startsWith("https://")) {
-          s = inside;
+    function resolveImage(field) {
+      if (!field) return "";
+      if (Array.isArray(field) && field.length > 0) field = field[0];
+      if (typeof field === "object") {
+        if (field.url) return String(field.url).trim();
+        if (field.publicUrl) return String(field.publicUrl).trim();
+        field = field.path || "";
+      }
+      let s = String(field).trim();
+      if (!s) return "";
+      if (s.includes("(") && s.includes(")") && s.includes("http")) {
+        const lastOpen = s.lastIndexOf("(");
+        const lastClose = s.lastIndexOf(")");
+        if (lastOpen !== -1 && lastClose !== -1 && lastClose > lastOpen) {
+          const inside = s.slice(lastOpen + 1, lastClose).trim();
+          if (inside.startsWith("http://") || inside.startsWith("https://")) s = inside;
         }
       }
-    }
-       // Remove lixo comum: espaço, %20 no final, aspas
-    s = s.replace(/^"+|"+$/g, "").trim();
-    s = s.replace(/%20+$/g, "").trim();
-
-    // Se tiver mais de um http na string, fica só do primeiro http
-    const firstHttp = s.indexOf("http");
-    if (firstHttp > 0) s = s.slice(firstHttp).trim();
-
-    // Valida se virou URL mesmo
-    if (s.startsWith("http://") || s.startsWith("https://")) return s;
-
-    return ""; // não é URL válida
-  }
-
-function getImgUrl(field) {
-    return resolveImage(field);
-  }
-  
-function getGalleryUrls(field) {
-    if (!field) return [];
-
-    if (Array.isArray(field)) return field.map(resolveImage).filter(Boolean);
-
-    // Se vier como JSON string "[...]" tenta parsear
-    if (typeof field === "string" && field.trim().startsWith("[")) {
-      try {
-        const arr = JSON.parse(field);
-        if (Array.isArray(arr)) return arr.map(resolveImage).filter(Boolean);
-      } catch (e) {}
+      s = s.replace(/^"+|"+$/g, "").trim();
+      s = s.replace(/%20+$/g, "").trim();
+      const firstHttp = s.indexOf("http");
+      if (firstHttp > 0) s = s.slice(firstHttp).trim();
+      if (s.startsWith("http://") || s.startsWith("https://")) return s;
+      return "";
     }
 
-    const one = resolveImage(field);
-    return one ? [one] : [];
-  }
-
-  async function init() {
-    console.log("Iniciando carregamento...");
-    try {
-      // 1) Notícias
-      const { data: news, error: errNews } = await _supabase
-        .from(T_NEWS)
-        .select("*")
-        .order("Data", { ascending: false })
-        .limit(5);
-
-      if (errNews) {
-        console.error("ERRO NOTICIAS:", errNews);
-        document.getElementById("news-list").innerHTML =
-          '<p style="text-align:center;color:#999">Erro ao carregar notícias (veja o console).</p>';
-      } else {
-        renderNews(news || []);
+    function getImgUrl(field) { return resolveImage(field); }
+    function getGalleryUrls(field) {
+      if (!field) return [];
+      if (Array.isArray(field)) return field.map(resolveImage).filter(Boolean);
+      if (typeof field === "string" && field.trim().startsWith("[")) {
+        try {
+          const arr = JSON.parse(field);
+          if (Array.isArray(arr)) return arr.map(resolveImage).filter(Boolean);
+        } catch (e) {}
       }
-
-      // 2) Discografia
-      const { data: discos, error: errDisco } = await _supabase
-        .from(T_DISCO)
-        .select("*")
-        .order("Data", { ascending: false });
-
-      if (errDisco) {
-        console.error("ERRO DISCO:", errDisco);
-      }
-      renderDisco(discos || []);
-
-      // 3) Membros
-      const { data: members, error: errMemb } = await _supabase
-        .from(T_MEMBERS)
-        .select("*")
-        .order("Geracao", { ascending: true })
-        .order("Nome", { ascending: true });
-
-      if (errMemb) {
-        console.error("ERRO MEMBROS:", errMemb);
-      }
-      loadedMembers = members || [];
-      renderMembers();
-    } catch (e) {
-      console.error("ERRO GERAL:", e);
-      alert("Erro no script. Verifique o console (F12).");
-    }
-  }
-
-  function renderNews(list) {
-    const c = document.getElementById("news-list");
-    c.innerHTML = "";
-
-    if (!list || list.length === 0) {
-      c.innerHTML = '<p style="text-align:center;color:#999">Sem notícias.</p>';
-      return;
+      const one = resolveImage(field);
+      return one ? [one] : [];
     }
 
-    list.forEach((r) => {
-      const d = r.Data ? String(r.Data).split("-") : ["", "", ""];
-      c.innerHTML += `
-        <div class="news-item">
-          <div class="news-date"><span>${d[2] || ""}</span>${d[1] || ""}</div>
-          <div class="news-content">
-            <span class="news-tag">${r.Categoria || "News"}</span>
-            <h4>${r.Titulo || ""}</h4>
-            <div class="news-text">${r.Texto || ""}</div>
-          </div>
-        </div>`;
-    });
-  }
+    // --- SENBATSU LOGIC ---
+    let senConfig = { rowcount: 3, rows: [6,5,5], centers: 1, single: "", song: "" };
+    let senSlots = [];
+    let senPickingIndex = -1;
 
-  function renderDisco(list) {
-    const c = document.getElementById("disco-grid");
-    c.innerHTML = "";
-
-    if (list && list.length > 0) {
-      const l = list[0];
-      const capaUrl = getImgUrl(l.Capa);
-
-      document.getElementById("hero-title").innerText = l.Titulo || "—";
-      document.getElementById("hero-sub").innerText = `${l.Tipo || ""}${
-        l.Center ? ` • Center: ${l.Center}` : ""
-      }`;
-      document.getElementById("hero-bg").src = capaUrl || "";
-    } else {
-      c.innerHTML =
-        '<p style="grid-column:1/-1;text-align:center;color:#999">Sem lançamentos.</p>';
-      return;
-    }
-
-    list.forEach((r) => {
-      const capaUrl = getImgUrl(r.Capa);
-
-      const safeData = encodeURIComponent(
-        JSON.stringify({
-          title: r.Titulo,
-          type: r.Tipo,
-          cover: capaUrl,
-          content: r.Tracklist,
-        })
-      ).replace(/'/g, "%27");
-
-      c.innerHTML += `
-        <div class="single-card" onclick="openDiscoModal('${safeData}')">
-          <div class="single-cover">
-            <img src="${capaUrl}" loading="lazy" onerror="this.src='https://placehold.co/600x600?text=Sem+Capa'">
-          </div>
-          <div class="single-info">
-            <div class="single-title-text">${r.Titulo || ""}</div>
-            <div class="single-type-text">${r.Tipo || ""}</div>
-          </div>
-        </div>`;
-    });
-  }
-
-  function openDiscoModal(json) {
-    const data = JSON.parse(decodeURIComponent(json));
-
-    document.getElementById("dm-title").innerText = data.title || "";
-    document.getElementById("dm-sub").innerText = data.type || "";
-    document.getElementById("dm-cover").src = data.cover || "";
-
-    const contentBox = document.getElementById("dm-content");
-
-    let htmlContent = data.content;
-    if (typeof htmlContent === "object") htmlContent = JSON.stringify(htmlContent);
-
-    contentBox.innerHTML =
-      htmlContent ||
-      '<p style="text-align:center;color:#999; margin-top:20px;">Sem detalhes.</p>';
-
-    const hasTabs = contentBox.querySelector(".modal-nav") && contentBox.querySelector(".modal-section");
-    const hasFormationGroups =
-      contentBox.querySelector(".formation-group") ||
-      contentBox.querySelector(".rows-wrap") ||
-      contentBox.querySelector(".member-card-static");
-    const hasTracklist = contentBox.querySelector(".tracklist");
-
-    if (!hasTabs && (hasFormationGroups || hasTracklist)) {
-      const original = contentBox.innerHTML;
-      const temp = document.createElement("div");
-      temp.innerHTML = original;
-
-      const tracklistEl = temp.querySelector(".tracklist");
-      let tracklistHTML = "";
-      let formationHTML = "";
-
-      if (tracklistEl) {
-        tracklistHTML = `<div class="modal-section active" data-section="tracklist">${tracklistEl.outerHTML}</div>`;
-        tracklistEl.remove();
-        formationHTML = `<div class="modal-section" data-section="formacao">${temp.innerHTML}</div>`;
-      } else {
-        tracklistHTML =
-          `<div class="modal-section active" data-section="tracklist"><p style="text-align:center;color:#999;margin:20px 0;">Sem tracklist.</p></div>`;
-        formationHTML = `<div class="modal-section" data-section="formacao">${original}</div>`;
-      }
-
-      contentBox.innerHTML = `
-        <div class="modal-nav">
-          <button class="modal-nav-btn active" data-section="tracklist">Tracklist</button>
-          <button class="modal-nav-btn" data-section="formacao">Formação</button>
-        </div>
-        ${tracklistHTML}
-        ${formationHTML}`;
-    }
-
-    const navBtns = contentBox.querySelectorAll(".modal-nav-btn");
-    navBtns.forEach((btn) => {
-      btn.onclick = function () {
-        navBtns.forEach((b) => b.classList.remove("active"));
-        contentBox.querySelectorAll(".modal-section").forEach((s) => s.classList.remove("active"));
-
-        this.classList.add("active");
-        const target = this.getAttribute("data-section");
-        const section = contentBox.querySelector(`.modal-section[data-section="${target}"]`);
-        if (section) section.classList.add("active");
-      };
-    });
-
-    document.getElementById("disco-modal").classList.add("active");
-  }
-
-  // === FILTROS DE MEMBROS ===
-  function setMemberFilter(type, btn) {
-    currentFilter = type;
-    document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-    if (btn) btn.classList.add("active");
-    renderMembers();
-  }
-
-  function renderMembers() {
-    const container = document.getElementById("members-container");
-    const buttons = document.getElementById("scroll-buttons");
-    container.innerHTML = "";
-    buttons.innerHTML = "";
-
-    if (!loadedMembers || loadedMembers.length === 0) {
-      container.innerHTML = '<p style="text-align:center;color:#999">Vazio.</p>';
-      return;
-    }
-
-    const EX_STATUSES = new Set(["Graduada", "Demitida", "Expulsa"]);
-    const groups = {};
-    const exMembers = [];
-
-    loadedMembers.forEach((r) => {
-      const status = (r.Status || "").trim();
-      const memberObj = {
-        Nome: r.Nome || "",
-        Time: r.Time || "Sem Time",
-        Geracao: r.Geracao || "Outros",
-        Status: status,
-        Foto: r.Foto,
-        Perfil: r.Perfil || "Sem biografia.",
-        Galeria: r.Galeria,
-        Participacoes: r.Participacoes || "",
-      };
-
-      if (EX_STATUSES.has(status)) exMembers.push(memberObj);
-      else {
-        const key = currentFilter === "team" ? memberObj.Time : memberObj.Geracao;
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(memberObj);
-      }
-    });
-
-    function makeCard(m) {
-      const photoUrl = getImgUrl(m.Foto) || "https://placehold.co/600x600?text=Sem+Foto";
-      const rawGallery = getGalleryUrls(m.Galeria);
-
-      const payload = encodeURIComponent(
-        JSON.stringify({
-          name: m.Nome,
-          team: m.Time,
-          gen: m.Geracao,
-          photo: photoUrl,
-          bio: m.Perfil,
-          gallery: rawGallery,
-          part: m.Participacoes,
-          status: m.Status,
-        })
-      ).replace(/'/g, "%27");
-
-      return `
-        <div class="member-card" onclick="openMember('${payload}')">
-          <div class="member-photo-container">
-            <img src="${photoUrl}" loading="lazy" onerror="this.src='https://placehold.co/600x600?text=Sem+Foto'">
-          </div>
-          <div class="member-info-box">
-            <div class="member-name-text">${m.Nome}</div>
-            <div class="member-team-text">${m.Time}</div>
-          </div>
-        </div>`;
-    }
-
-    let sortedKeys = Object.keys(groups).sort();
-    if (currentFilter === "team") {
-      const order = ["Team C", "Team T", "Team L", "Team Kenkyuusei"];
-      sortedKeys = sortedKeys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-    }
-
-    sortedKeys.forEach((key, idx) => {
-      const btnId = `group-${idx}`;
-      buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">${key}</button>`;
-
-      let html = "";
-      groups[key].forEach((m) => (html += makeCard(m)));
-
-      container.innerHTML += `<div id="${btnId}" class="generation-group">
-        <h3 class="generation-title">${key}</h3>
-        <div class="member-grid-layout">${html}</div>
-      </div>`;
-    });
-
-    if (exMembers.length) {
-      const exId = "gen-ex";
-      buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${exId}').scrollIntoView({behavior:'smooth', block:'start'})">Ex-membros</button>`;
-
-      let exHtml = "";
-      exMembers
-        .sort((a, b) => a.Nome.localeCompare(b.Nome))
-        .forEach((m) => (exHtml += makeCard(m)));
-
-      container.innerHTML += `<div id="${exId}" class="generation-group">
-        <h3 class="generation-title">Ex-membros</h3>
-        <div class="member-grid-layout">${exHtml}</div>
-      </div>`;
-    }
-
-    const btns = document.querySelectorAll(".button-gen");
-    if (btns.length > 0) btns[0].classList.add("active");
-
-    btns.forEach((b) => {
-      b.onclick = function () {
-        btns.forEach((x) => x.classList.remove("active"));
-        this.classList.add("active");
-        const targetId = this.getAttribute("onclick").match(/'([^']+)'/)[1];
-        document.getElementById(targetId).scrollIntoView({ behavior: "smooth", block: "start" });
-      };
-    });
-  }
-
-  function openMember(json) {
-    const data = JSON.parse(decodeURIComponent(json));
-
-    document.getElementById("m-cover").src = data.photo || "";
-    document.getElementById("m-name").innerText = data.name || "";
-
-    const extra = data.status === "Graduada" ? " • Graduada" : "";
-    document.getElementById("m-team").innerText = `${data.team || ""} • ${data.gen || ""}${extra}`;
-    document.getElementById("m-bio").innerText = data.bio || "Sem biografia.";
-
-    const gal = document.getElementById("m-gallery");
-    gal.innerHTML = "";
-
-    if (data.gallery && data.gallery.length) {
-      data.gallery.forEach((url) => {
-        const u = resolveImage(url);
-        gal.innerHTML += `<img src="${u}" loading="lazy" onerror="this.style.display='none'">`;
+    function senRenderRowInputs() {
+      const rc = parseInt(document.getElementById("s-rowcount").value, 10);
+      const wrap = document.getElementById("s-row-inputs");
+      wrap.innerHTML = "";
+      const defaults = { 1:[16], 2:[8,8], 3:[6,5,5], 4:[4,4,4,4] };
+      const arr = defaults[rc] ? [...defaults[rc]] : Array.from({length:rc}, ()=>4);
+      wrap.innerHTML += `<div style="margin-bottom:8px;color:#777;font-weight:800;font-size:.8rem;">Tamanho de cada fileira</div>`;
+      const labels = ["Frente (Front)", "Meio", "Fundo", "Fundo 2"];
+      arr.forEach((v, i) => {
+        const lbl = labels[i] || `Fila ${i+1}`;
+        wrap.innerHTML += `<div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;"><div style="min-width:90px;font-weight:900;color:#444;">${lbl}</div><input type="number" min="1" value="${v}" id="s-row-${i}" style="flex:1;padding:12px;border:1px solid #eee;border-radius:12px;"></div>`;
       });
-    } else {
-      gal.innerHTML = '<p style="grid-column:1/-1;color:#999;text-align:center;">Sem fotos.</p>';
     }
+    senRenderRowInputs();
 
-    const partContainer = document.getElementById("m-part");
-    partContainer.innerHTML = "";
-
-    try {
-      if (data.part) {
-        let participations = data.part;
-        if (typeof participations === "string") participations = JSON.parse(participations);
-        if (!Array.isArray(participations) || participations.length === 0) throw "Vazio";
-
-        participations.forEach((p) => {
-          const tracks = Array.isArray(p.tracks) ? p.tracks : [p.tracks];
-          let tracksHtml = "";
-
-          const LABEL_TEXT = {
-            "a-side": "A-side",
-            "b-side": "B-side",
-            undergirls: "Undergirls",
-            unit: "Unit",
-            solo: "Solo",
-            center: "Center",
-            "w-center": "W-Center",
-            "A-side": "A-side",
-            "B-side": "B-side",
-          };
-
-          tracks.forEach((t) => {
-            const labels = Array.isArray(t.labels) ? t.labels : [];
-            const labelsHtml = labels
-              .map((l) => {
-                const raw = String(l);
-                const k = raw.toLowerCase();
-                return `<span class="label ${k}">${LABEL_TEXT[k] || LABEL_TEXT[raw] || raw}</span>`;
-              })
-              .join("");
-
-            const unitHtml = t.unitName ? `<span class="label unit">${t.unitName}</span>` : "";
-
-            tracksHtml += `<li>
-              <span class="song-name">${t.title || "Música"}</span>
-              <div class="song-badges">${unitHtml}${labelsHtml}</div>
-            </li>`;
-          });
-
-          partContainer.innerHTML += `
-            <div class="part-card">
-              <div class="part-header">${p.single || "Single"}</div>
-              <ul class="part-list">${tracksHtml}</ul>
-            </div>`;
-        });
-      } else {
-        throw "Vazio";
+    function senStart() {
+      if(!loadedMembers || loadedMembers.length === 0){ alert("Membros ainda carregando..."); return; }
+      const rc = parseInt(document.getElementById("s-rowcount").value, 10);
+      const centers = Math.max(0, parseInt(document.getElementById("s-centers").value || "0", 10));
+      const single = (document.getElementById("s-single").value || "").trim();
+      const song = (document.getElementById("s-song").value || "").trim();
+      const rows = [];
+      let total = 0;
+      for(let i=0;i<rc;i++){
+        const v = Math.max(1, parseInt(document.getElementById(`s-row-${i}`).value || "1", 10));
+        rows.push(v); total += v;
       }
-    } catch (e) {
-      partContainer.innerHTML =
-        '<p style="color:#999;text-align:center;margin-top:20px;">Nenhuma participação encontrada.</p>';
+      if(centers > total){ alert("Muitos centers."); return; }
+      senConfig = { rowcount: rc, rows, centers, single, song };
+      senSlots = Array.from({length: total}, ()=>null);
+      document.getElementById("sen-modal").classList.add("active");
+      document.getElementById("sen-print-single").innerText = single ? single : "(NOME DO SINGLE)";
+      document.getElementById("sen-print-song").innerText = song ? song : "(FORMAÇÃO ESCOLHIDA)";
+      senRenderStage();
     }
 
-    tab("perfil", document.querySelector(".tab-btn"));
-    document.getElementById("member-modal").classList.add("active");
-  }
+    function senClose() { document.getElementById("sen-modal").classList.remove("active"); senClosePicker(); }
+    function senClear() { senSlots = senSlots.map(()=>null); senRenderStage(); }
 
-  function closeModal(id) {
-    document.getElementById(id).classList.remove("active");
-  }
+    function senRenderStage() {
+      const rowsWrap = document.getElementById("sen-rows");
+      rowsWrap.innerHTML = "";
+      
+      let badgeCounter = 1;
+      let globalIdx = 0;
 
-  function tab(t, el) {
-    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-    el.classList.add("active");
-    document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
-    document.getElementById("tab-" + t).classList.add("active");
-  }
+      for(let r=0; r<senConfig.rowcount; r++){
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "sen-row";
+        
+        const rowLen = senConfig.rows[r];
+        
+        // --- LOGIC: CENTER-ORIENTED SORTING ---
+        let indices = [];
+        for(let k=0; k<rowLen; k++) indices.push(globalIdx + k);
+        
+        let leftSide = [];
+        let rightSide = [];
+        
+        for(let k=0; k<rowLen; k++){
+            if(k === 0) {
+                // Center doesn't go to side arrays yet
+            } else if (k % 2 !== 0) {
+                leftSide.push(indices[k]); // 1, 3, 5...
+            } else {
+                rightSide.push(indices[k]); // 2, 4, 6...
+            }
+        }
+        
+        // Reassemble: Left(Reversed) + Center + Right
+        let visualIndices = [...leftSide.reverse(), indices[0], ...rightSide];
+        
+        visualIndices.forEach((dataIndex) => {
+            const badgeNum = dataIndex + 1;
+            
+            const member = senSlots[dataIndex];
+            const isCenter = badgeNum <= senConfig.centers;
+            
+            const photo = member ? (getImgUrl(member.Foto) || "") : "";
+            const name = member ? (member.Nome || "Membro") : "Vazio";
+            
+            const slot = document.createElement("div");
+            slot.className = "sen-slot" + (isCenter ? " is-center" : "");
+            
+            (function(capturedIdx){
+               slot.onclick = () => senOpenPicker(capturedIdx);
+            })(dataIndex);
 
-  document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("modal-overlay")) {
-      e.target.classList.remove("active");
+            slot.innerHTML = `<div class="sen-badge">${badgeNum}</div><div class="sen-circle">${photo ? `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<i class="fas fa-user" style="color:#bbb;"></i>`}</div><div class="sen-name">${name}</div>`;
+            rowDiv.appendChild(slot);
+        });
+
+        rowsWrap.appendChild(rowDiv);
+        
+        // Increment global counter by row length
+        globalIdx += rowLen;
+      }
     }
-  });
 
-  // Inicia o app
-  init();
-</script>
+    function senOpenPicker(index) {
+      senPickingIndex = index;
+      document.getElementById("sen-pick").style.display = "flex";
+      senRenderPicker();
+    }
+    function senClosePicker() { document.getElementById("sen-pick").style.display = "none"; senPickingIndex = -1; }
+    function senPickEmpty() { if(senPickingIndex < 0) return; senSlots[senPickingIndex] = null; senClosePicker(); senRenderStage(); }
+
+    function senRenderPicker() {
+      const grid = document.getElementById("sen-pick-grid");
+      grid.innerHTML = "";
+      const t = document.getElementById("sen-filter-team").value.trim();
+      const g = document.getElementById("sen-filter-gen").value.trim();
+      const q = (document.getElementById("sen-filter-q").value || "").toLowerCase().trim();
+      const EX = new Set(["graduada","demitida","expulsa"]);
+      
+      let list = (loadedMembers || []).filter(m => !EX.has((m.Status||"").trim().toLowerCase()));
+
+      if(t) list = list.filter(m => (m.Time||"") === t);
+      if(g) list = list.filter(m => String(m.Geracao||"").includes(g)); 
+      if(q) list = list.filter(m => String(m.Nome||"").toLowerCase().includes(q));
+
+      list.forEach(m => {
+        const url = getImgUrl(m.Foto) || "https://placehold.co/120x120?text=?";
+        const item = document.createElement("div");
+        item.className = "select-item";
+        item.innerHTML = `<img src="${url}" onerror="this.src='https://placehold.co/120x120?text=?'"><div>${m.Nome || ""}</div>`;
+        item.onclick = () => {
+          if(senPickingIndex < 0) return;
+          senSlots[senPickingIndex] = m;
+          senClosePicker();
+          senRenderStage();
+        };
+        grid.appendChild(item);
+      });
+      if(list.length === 0) grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#999;font-weight:800;">Nenhum membro encontrado.</p>`;
+    }
+
+    async function senPrint() {
+      const node = document.getElementById("sen-print");
+      if(typeof html2canvas === 'undefined') return alert("Erro: Biblioteca html2canvas não carregada.");
+      try {
+        const canvas = await html2canvas(node, { backgroundColor: null, scale: 2, useCORS: true });
+        const url = canvas.toDataURL("image/png");
+        const w = window.open("");
+        // FIX: style height:auto prevents stretching
+        w.document.write(`<h2 style="text-align:center;font-family:sans-serif;">Seu Senbatsu</h2><img src="${url}" style="width:100%;max-width:900px;height:auto;display:block;margin:0 auto;border:1px solid #ccc;">`);
+      } catch(e) {
+        console.error(e);
+        alert("Falha ao gerar print (Tente usar screenshots do celular).");
+      }
+    }
+
+    // --- INIT & CORE ---
+    async function init() {
+      console.log("Iniciando...");
+      try {
+        const { data: news } = await _supabase.from(T_NEWS).select("*").order("Data", { ascending: false }).limit(5);
+        renderNews(news || []);
+        const { data: discos } = await _supabase.from(T_DISCO).select("*").order("Data", { ascending: false });
+        renderDisco(discos || []);
+        const { data: members } = await _supabase.from(T_MEMBERS).select("*").order("Geracao", { ascending: true }).order("Nome", { ascending: true });
+        loadedMembers = members || [];
+        renderMembers();
+        console.log("Membros carregados:", loadedMembers.length);
+      } catch (e) {
+        console.error("ERRO GERAL:", e);
+        alert("Erro ao conectar no banco de dados.");
+      }
+    }
+
+    function renderNews(list) {
+      const c = document.getElementById("news-list"); c.innerHTML = "";
+      if (!list.length) { c.innerHTML = '<p style="text-align:center;color:#999">Sem notícias.</p>'; return; }
+      list.forEach((r) => {
+        const d = r.Data ? String(r.Data).split("-") : ["", "", ""];
+        c.innerHTML += `<div class="news-item"><div class="news-date"><span>${d[2] || ""}</span>${d[1] || ""}</div><div class="news-content"><span class="news-tag">${r.Categoria || "News"}</span><h4>${r.Titulo || ""}</h4><div class="news-text">${r.Texto || ""}</div></div></div>`;
+      });
+    }
+
+    function renderDisco(list) {
+      const c = document.getElementById("disco-grid"); c.innerHTML = "";
+      if (list.length > 0) {
+        const l = list[0];
+        document.getElementById("hero-title").innerText = l.Titulo || "—";
+        document.getElementById("hero-sub").innerText = `${l.Tipo || ""}${l.Center ? ` • Center: ${l.Center}` : ""}`;
+        document.getElementById("hero-bg").src = getImgUrl(l.Capa) || "";
+      } else { c.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999">Sem lançamentos.</p>'; return; }
+      list.forEach((r) => {
+        const safeData = encodeURIComponent(JSON.stringify({ title: r.Titulo, type: r.Tipo, cover: getImgUrl(r.Capa), content: r.Tracklist })).replace(/'/g, "%27");
+        c.innerHTML += `<div class="single-card" onclick="openDiscoModal('${safeData}')"><div class="single-cover"><img src="${getImgUrl(r.Capa)}" loading="lazy" onerror="this.src='https://placehold.co/600x600?text=?'"></div><div class="single-info"><div class="single-title-text">${r.Titulo || ""}</div><div class="single-type-text">${r.Tipo || ""}</div></div></div>`;
+      });
+    }
+
+    // MISSING FUNCTION: openDiscoModal
+    function openDiscoModal(json) {
+      const data = JSON.parse(decodeURIComponent(json));
+      document.getElementById("dm-title").innerText = data.title || "";
+      document.getElementById("dm-sub").innerText = data.type || "";
+      document.getElementById("dm-cover").src = data.cover || "";
+      const contentBox = document.getElementById("dm-content");
+      let htmlContent = data.content;
+      if(typeof htmlContent === "object") htmlContent = JSON.stringify(htmlContent);
+      contentBox.innerHTML = htmlContent || '<p style="text-align:center;color:#999; margin-top:20px;">Sem detalhes.</p>';
+      
+      const hasTabs = contentBox.querySelector(".modal-nav") && contentBox.querySelector(".modal-section");
+      const hasFormationGroups = contentBox.querySelector(".formation-group") || contentBox.querySelector(".rows-wrap") || contentBox.querySelector(".member-card-static");
+      const hasTracklist = contentBox.querySelector(".tracklist");
+
+      if (!hasTabs && (hasFormationGroups || hasTracklist)) {
+        const original = contentBox.innerHTML;
+        const temp = document.createElement("div");
+        temp.innerHTML = original;
+        const tracklistEl = temp.querySelector(".tracklist");
+        let tracklistHTML = "", formationHTML = "";
+        if (tracklistEl) {
+          tracklistHTML = `<div class="modal-section active" data-section="tracklist">${tracklistEl.outerHTML}</div>`;
+          tracklistEl.remove();
+          formationHTML = `<div class="modal-section" data-section="formacao">${temp.innerHTML}</div>`;
+        } else {
+          tracklistHTML = `<div class="modal-section active" data-section="tracklist"><p style="text-align:center;color:#999;margin:20px 0;">Sem tracklist.</p></div>`;
+          formationHTML = `<div class="modal-section" data-section="formacao">${original}</div>`;
+        }
+        contentBox.innerHTML = `<div class="modal-nav"><button class="modal-nav-btn active" data-section="tracklist">Tracklist</button><button class="modal-nav-btn" data-section="formacao">Formação</button></div>${tracklistHTML}${formationHTML}`;
+      }
+
+      const navBtns = contentBox.querySelectorAll(".modal-nav-btn");
+      navBtns.forEach((btn) => {
+        btn.onclick = function () {
+          navBtns.forEach((b) => b.classList.remove("active"));
+          contentBox.querySelectorAll(".modal-section").forEach((s) => s.classList.remove("active"));
+          this.classList.add("active");
+          const target = this.getAttribute("data-section");
+          const section = contentBox.querySelector(`.modal-section[data-section="${target}"]`);
+          if (section) section.classList.add("active");
+        };
+      });
+      document.getElementById("disco-modal").classList.add("active");
+    }
+
+    function setMemberFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      renderMembers();
+    }
+
+    function renderMembers() {
+      const container = document.getElementById("members-container");
+      const buttons = document.getElementById("scroll-buttons");
+      container.innerHTML = ""; buttons.innerHTML = "";
+      if (!loadedMembers.length) { container.innerHTML = '<p style="text-align:center;color:#999">Vazio.</p>'; return; }
+      const EX_STATUSES = new Set(["graduada", "demitida", "expulsa"]);
+      const groups = {}; const exMembers = [];
+      loadedMembers.forEach((r) => {
+        const status = (r.Status || "").trim().toLowerCase();
+        if (EX_STATUSES.has(status)) exMembers.push(r);
+        else {
+          const key = currentFilter === "team" ? (r.Time || "Sem Time") : (r.Geracao || "Outros");
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(r);
+        }
+      });
+      function makeCard(m) {
+        const payload = encodeURIComponent(JSON.stringify({ name: m.Nome, team: m.Time, gen: m.Geracao, photo: getImgUrl(m.Foto), bio: m.Perfil, gallery: getGalleryUrls(m.Galeria), part: m.Participacoes, status: m.Status })).replace(/'/g, "%27");
+        return `<div class="member-card" onclick="openMember('${payload}')"><div class="member-photo-container"><img src="${getImgUrl(m.Foto)}" loading="lazy" onerror="this.src='https://placehold.co/600x600?text=?'"></div><div class="member-info-box"><div class="member-name-text">${m.Nome}</div><div class="member-team-text">${m.Time}</div></div></div>`;
+      }
+      let sortedKeys = Object.keys(groups).sort();
+      if (currentFilter === "team") { const order = ["Team C", "Team T", "Team L", "Team Kenkyuusei"]; sortedKeys = sortedKeys.sort((a, b) => order.indexOf(a) - order.indexOf(b)); }
+      sortedKeys.forEach((key, idx) => {
+        const btnId = `group-${idx}`;
+        buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${btnId}').scrollIntoView({behavior:'smooth', block:'start'})">${key}</button>`;
+        let html = ""; groups[key].forEach((m) => (html += makeCard(m)));
+        container.innerHTML += `<div id="${btnId}" class="generation-group"><h3 class="generation-title">${key}</h3><div class="member-grid-layout">${html}</div></div>`;
+      });
+      if (exMembers.length) {
+        const exId = "gen-ex"; buttons.innerHTML += `<button class="button-gen" onclick="document.getElementById('${exId}').scrollIntoView({behavior:'smooth', block:'start'})">Ex-membros</button>`;
+        let exHtml = ""; exMembers.sort((a, b) => (a.Nome||"").localeCompare(b.Nome||"")).forEach((m) => (exHtml += makeCard(m)));
+        container.innerHTML += `<div id="${exId}" class="generation-group"><h3 class="generation-title">Ex-membros</h3><div class="member-grid-layout">${exHtml}</div></div>`;
+      }
+      const btns = document.querySelectorAll(".button-gen");
+      if (btns.length > 0) btns[0].classList.add("active");
+      btns.forEach((b) => {
+        b.onclick = function () {
+          btns.forEach((x) => x.classList.remove("active"));
+          this.classList.add("active");
+          const targetId = this.getAttribute("onclick").match(/'([^']+)'/)[1];
+          document.getElementById(targetId).scrollIntoView({ behavior: "smooth", block: "start" });
+        };
+      });
+    }
+
+    function openMember(json) {
+      const data = JSON.parse(decodeURIComponent(json));
+      document.getElementById("m-cover").src = data.photo || "";
+      document.getElementById("m-name").innerText = data.name || "";
+      document.getElementById("m-team").innerText = `${data.team || ""} • ${data.gen || ""}${data.status === "Graduada" ? " • Graduada" : ""}`;
+      document.getElementById("m-bio").innerText = data.bio || "Sem biografia.";
+      const gal = document.getElementById("m-gallery"); gal.innerHTML = "";
+      (data.gallery || []).forEach(url => gal.innerHTML += `<img src="${resolveImage(url)}" loading="lazy">`);
+      if(!data.gallery?.length) gal.innerHTML = '<p style="grid-column:1/-1;color:#999;text-align:center;">Sem fotos.</p>';
+      const partContainer = document.getElementById("m-part"); partContainer.innerHTML = "";
+      try {
+        if (data.part) {
+          let participations = typeof data.part === "string" ? JSON.parse(data.part) : data.part;
+          if (!Array.isArray(participations) || !participations.length) throw "Vazio";
+          participations.forEach(p => {
+            let tracksHtml = "";
+            const tracks = Array.isArray(p.tracks) ? p.tracks : [p.tracks];
+            tracks.forEach(t => {
+              const lbls = (t.labels||[]).map(l => `<span class="label ${String(l).toLowerCase()}">${l}</span>`).join('');
+              tracksHtml += `<li><span class="song-name">${t.title || "Música"}</span><div class="song-badges">${t.unitName ? `<span class="label unit">${t.unitName}</span>` : ""}${lbls}</div></li>`;
+            });
+            partContainer.innerHTML += `<div class="part-card"><div class="part-header">${p.single || "Single"}</div><ul class="part-list">${tracksHtml}</ul></div>`;
+          });
+        } else throw "Vazio";
+      } catch (e) { partContainer.innerHTML = '<p style="color:#999;text-align:center;margin-top:20px;">Nenhuma participação encontrada.</p>'; }
+      tab("perfil", document.querySelector(".tab-btn"));
+      document.getElementById("member-modal").classList.add("active");
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+    function tab(t, el) {
+      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active")); el.classList.add("active");
+      document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active")); document.getElementById("tab-" + t).classList.add("active");
+    }
+    document.addEventListener("click", (e) => { if (e.target.classList.contains("modal-overlay")) e.target.classList.remove("active"); });
+    init();
+  </script>
 </body>
 </html>
