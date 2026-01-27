@@ -492,7 +492,7 @@
         return `<ul class="tracklist">${list.map(item => {
             let cls='is-bside'; let ico='fa-compact-disc';
             const k = (item.kind||"").toLowerCase();
-            if(k.includes('a-side')||k.includes('aside')) { cls='is-aside'; ico='fa-star'; }
+            if(k.includes('a-side')||k.includes('aside')) { cls='is-aside'; icon='fa-star'; }
             else if(k.includes('unit')) { cls='is-unit'; ico='fa-users'; }
             return `<li><span>${item.name}</span><span class="label-brat ${cls}"><i class="fas ${ico}"></i> ${item.kind}</span></li>`;
         }).join('')}</ul>`;
@@ -656,25 +656,39 @@
       document.getElementById("m-cover").src = resolveImage(m.Foto);
       document.getElementById("m-bio").innerText = m.Perfil || "Sem bio.";
       
+      // Parse Inicial
       let parts = typeof m.Participacoes === "string" ? JSON.parse(m.Participacoes || "[]") : m.Participacoes;
       if (!Array.isArray(parts)) parts = [];
 
-      // --- LOGICA DE ORDENAÇÃO POR ID (CRONOLÓGICA) ---
-      // 1. Cria um mapa: Titulo -> ID
+      // Mapa para Ordenação
       const discoMap = {};
       loadedDiscos.forEach(d => { discoMap[d.Titulo] = d.id || 0; });
 
-      // 2. Ordena usando o mapa
+      // Ordenação Segura (funciona com string ou objeto)
       parts.sort((a, b) => {
-        const idA = discoMap[a.single] || 99999;
-        const idB = discoMap[b.single] || 99999;
-        return idA - idB; // Menor ID (mais antigo) primeiro
+        const titleA = typeof a === 'string' ? a.split(':')[0] : (a.single || '');
+        const titleB = typeof b === 'string' ? b.split(':')[0] : (b.single || '');
+        const idA = discoMap[titleA] || 99999;
+        const idB = discoMap[titleB] || 99999;
+        return idA - idB; 
       });
       
       const partsHTML = parts.map(p => {
-        const tracks = Array.isArray(p.tracks) ? p.tracks : [p.tracks];
+        // === CORREÇÃO CRÍTICA AQUI ===
+        // Se for string (formato antigo), retorna simples
+        if (typeof p === 'string') {
+            return `<div class="part-card"><div class="part-row" style="font-weight:700;">${p}</div></div>`;
+        }
+
+        // Se for objeto (formato novo), processa com segurança
+        const rawTracks = p.tracks || []; 
+        const tracks = Array.isArray(rawTracks) ? rawTracks : [rawTracks];
+
         const rows = tracks.map(t => {
-          const badges = (t.labels || []).map(l => {
+          if (!t) return ""; // Pula faixas vazias
+
+          const labels = t.labels || [];
+          const badges = Array.isArray(labels) ? labels.map(l => {
             const slug = String(l).toLowerCase();
             let cls = ''; let icon = 'fa-tag';
             if(slug.includes('a-side') || slug==='aside') { cls='is-aside'; icon='fa-star'; }
@@ -682,10 +696,12 @@
             else if(slug.includes('center')) { cls='is-center'; icon='fa-crown'; }
             else if(slug.includes('unit')) { cls='is-unit'; icon='fa-users'; }
             return `<span class="label-brat ${cls}"><i class="fas ${icon}"></i> ${l}</span>`;
-          }).join('');
-          return `<div class="part-row"><span>${t.title}</span><div>${badges}</div></div>`;
+          }).join('') : '';
+          
+          return `<div class="part-row"><span>${t.title || 'Música'}</span><div>${badges}</div></div>`;
         }).join('');
-        return `<div class="part-card"><div class="part-header">${p.single}</div>${rows}</div>`;
+        
+        return `<div class="part-card"><div class="part-header">${p.single || 'Single'}</div>${rows}</div>`;
       }).join('');
 
       document.getElementById("m-part").innerHTML = partsHTML || '<p style="text-align:center; color:#999; padding:20px;">Nenhuma música registrada.</p>';
