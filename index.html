@@ -60,7 +60,7 @@
     /* GRID DISCOGRAFIA MENOR */
     .grid-2 { 
         display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Mais itens por linha */
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
         gap: 12px; 
         align-items: start; 
     }
@@ -71,7 +71,6 @@
     .item-card:active { transform: scale(0.95); }
     .item-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border: var(--border); border-radius: 12px; background: #fff; display: block; }
     
-    /* Nome do item menor na discografia */
     #disco-grid .item-name { font-size: 0.7rem; } 
     .item-name { font-weight: 900; font-size: 0.8rem; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
@@ -538,7 +537,7 @@
       return 'fa-music';
     }
 
-    /* --- LÓGICA DE STAGES (NOVO) --- */
+    /* --- LÓGICA DE STAGES (CORRIGIDA E BLINDADA) --- */
     function renderStagesList() {
         const div = document.getElementById('stages-list');
         if(!loadedStages.length) {
@@ -565,7 +564,7 @@
         document.getElementById("sm-sub").innerText = stage.Subtitulo || '';
         document.getElementById("sm-cover").src = resolveImage(stage.Capa);
 
-        // Render Tabs
+        // Render Tabs (Estrutura inicial)
         const content = document.getElementById("sm-content");
         content.innerHTML = `
             <div class="tabs">
@@ -579,13 +578,23 @@
                 <div style="text-align:center; color:#999;">Carregando elenco...</div>
             </div>
         `;
-
-        initTabsAndAccordion(content); // Reusa lógica de tabs
+        
         document.getElementById("stage-modal").classList.add("active");
 
-        // Fetch Cast
-        const { data: casts } = await _sb.from(T_STAGECASTS).select('*').eq('stage_id', stageId);
-        renderStageCasts(casts || []);
+        // Fetch Cast (Com tratamento de erro)
+        try {
+            const { data: casts, error } = await _sb.from(T_STAGECASTS).select('*').eq('stage_id', stageId);
+            
+            if(error) { throw error; }
+            
+            renderStageCasts(casts || []);
+        } catch(e) {
+            console.error(e);
+            document.getElementById('pane-s-cast').innerHTML = '<div style="text-align:center; color:red; padding:20px;">Erro ao carregar elenco.</div>';
+        }
+        
+        // Ativa tabs e accordion DEPOIS que tudo renderizou
+        initTabsAndAccordion(content); 
     }
 
     function renderSetlist(text) {
@@ -606,11 +615,33 @@
             div.innerHTML = '<p style="color:#999; text-align:center;">Nenhum elenco cadastrado.</p>';
             return;
         }
+        
+        // --- AQUI ESTAVA O PROBLEMA: BLINDAGEM DE DADOS ---
         div.innerHTML = casts.map(cast => {
-            const members = typeof cast.Membros === 'string' ? JSON.parse(cast.Membros) : cast.Membros;
-            const grid = (members || []).map(m => {
+            let members = cast.Membros;
+            
+            // 1. Tenta fazer parse se for string (pode estar stringificado 2x)
+            try {
+                if (typeof members === 'string') {
+                    members = JSON.parse(members);
+                    // Se ainda for string após o primeiro parse, tenta de novo
+                    if (typeof members === 'string') {
+                        members = JSON.parse(members);
+                    }
+                }
+            } catch (e) {
+                console.warn("Erro ao ler membros do stage:", cast.Nome, e);
+                members = [];
+            }
+
+            // 2. Garante que é array
+            if (!members) members = [];
+            if (!Array.isArray(members)) members = [members];
+
+            // 3. Renderiza o grid de membros
+            const grid = members.map(m => {
                 const real = loadedMembers.find(x => x.Nome === m.name);
-                const photo = real ? resolveImage(real.Foto) : `https://placehold.co/80x80/eee/333?text=${m.name.charAt(0)}`;
+                const photo = real ? resolveImage(real.Foto) : `https://placehold.co/80x80/eee/333?text=${(m.name||"?").charAt(0)}`;
                 return `
                     <div class="member-card-static">
                         <img src="${photo}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid #ccc;">
